@@ -11,15 +11,11 @@
         <p>Projetos:</p>
 
         {{range .}}
-
         <div>
-            <h2>{{.Name}}</h2>
-
+            <h2><a href="/project?id={{.ID}}">{{.Name}}</a></h2>
             <p>Cards: {{len .Cards}}</p>
         </div>
-
         <hr />
-
         {{end}}
     </body>
 </html>

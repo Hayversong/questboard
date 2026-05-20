@@ -7,6 +7,27 @@ import (
 	"github.com/Hayversong/questboard/internal/model"
 )
 
+func SaveProjects(
+	projects []model.Project,
+) error {
+
+	data, err := json.MarshalIndent(
+		projects,
+		"",
+		"  ",
+	)
+
+	if err != nil {
+		return err
+	}
+
+	return os.WriteFile(
+		"data/projects.json",
+		data,
+		0644,
+	)
+}
+
 func LoadProjects() ([]model.Project, error) {
 
 	data, err := os.ReadFile(
