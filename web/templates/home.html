@@ -1,4 +1,5 @@
 <!doctype html>
+
 <html>
     <head>
         <title>QuestBoard</title>
@@ -7,6 +8,18 @@
     <body>
         <h1>QuestBoard</h1>
 
-        <p>Seu painel de produção de jogos.</p>
+        <p>Projetos:</p>
+
+        {{range .}}
+
+        <div>
+            <h2>{{.Name}}</h2>
+
+            <p>Cards: {{len .Cards}}</p>
+        </div>
+
+        <hr />
+
+        {{end}}
     </body>
 </html>

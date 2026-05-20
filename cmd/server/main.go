@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -10,6 +9,17 @@ import (
 )
 
 func home(w http.ResponseWriter, r *http.Request) {
+
+	projects, err := storage.LoadProjects()
+
+	if err != nil {
+		http.Error(
+			w,
+			err.Error(),
+			http.StatusInternalServerError,
+		)
+		return
+	}
 
 	tmpl, err := template.ParseFiles(
 		"web/templates/home.html",
@@ -24,7 +34,10 @@ func home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = tmpl.Execute(w, nil)
+	err = tmpl.Execute(
+		w,
+		projects,
+	)
 
 	if err != nil {
 		http.Error(
@@ -33,24 +46,18 @@ func home(w http.ResponseWriter, r *http.Request) {
 			http.StatusInternalServerError,
 		)
 	}
-
 }
 
 func main() {
 
 	http.HandleFunc("/", home)
 
-	projects, err := storage.LoadProjects()
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Println(projects)
-
 	log.Println("Servidor rodando em :8080")
 
-	err = http.ListenAndServe(":8080", nil)
+	err := http.ListenAndServe(
+		":8080",
+		nil,
+	)
 
 	if err != nil {
 		log.Fatal(err)
