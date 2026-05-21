@@ -18,6 +18,10 @@ func main() {
 		"/cards/move",
 		handler.MoveCardHandler,
 	)
+	http.HandleFunc(
+		"/projects",
+		handler.CreateProjectHandler,
+	)
 
 	log.Println("Servidor rodando em http://localhost:8080")
 

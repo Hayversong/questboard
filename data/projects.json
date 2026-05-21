@@ -37,6 +37,26 @@
         "Description": "",
         "Status": "done",
         "Rarity": "epic"
+      },
+      {
+        "ID": "1779395696972384869",
+        "Title": "teste3",
+        "Description": "",
+        "Status": "done",
+        "Rarity": "rare"
+      }
+    ]
+  },
+  {
+    "ID": "1779396542200800223",
+    "Name": "Dungeon Survivor",
+    "Cards": [
+      {
+        "ID": "1779396552808819023",
+        "Title": "teste1",
+        "Description": "",
+        "Status": "done",
+        "Rarity": "common"
       }
     ]
   }
