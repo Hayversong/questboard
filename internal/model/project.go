@@ -44,6 +44,26 @@ func (p Project) Level() int {
 	return (p.XP() / 100) + 1
 }
 
+func (p Project) Rank() string {
+
+	level := p.Level()
+
+	switch {
+
+	case level >= 10:
+		return "Lenda"
+
+	case level >= 6:
+		return "Herói"
+
+	case level >= 3:
+		return "Aventureiro"
+
+	default:
+		return "Novato"
+	}
+}
+
 func (p Project) Achievements() []Achievement {
 
 	var achievements []Achievement

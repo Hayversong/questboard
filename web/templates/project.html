@@ -2,6 +2,7 @@
 <html lang="pt-br">
     <head>
         <meta charset="UTF-8" />
+
         <title>{{.Name}} - QuestBoard</title>
 
         <link rel="stylesheet" href="/static/css/style.css" />
@@ -16,11 +17,31 @@
 
             <p>Progresso: {{.Progress}}%</p>
 
+            <progress value="{{.Progress}}" max="100"></progress>
+
             <p>XP: {{.XP}}</p>
 
             <p>Level: {{.Level}}</p>
 
-            <progress value="{{.Progress}}" max="100"></progress>
+            <p>
+                Título:
+
+                <strong> {{.Rank}} </strong>
+            </p>
+
+            <section>
+                <h2>Achievements</h2>
+
+                {{range .Achievements}}
+
+                <div class="achievement">{{.Title}}</div>
+
+                {{else}}
+
+                <p>Nenhuma conquista ainda</p>
+
+                {{end}}
+            </section>
         </header>
 
         <main>
@@ -64,13 +85,22 @@
 
                     {{range .Cards}} {{if eq .Status "backlog"}}
 
-                    <div class="card" style="border-left: 6px solid {{.Color}}">
+                    <div
+                        class="card"
+                        style="
+border-left:
+6px solid {{.Color}}
+"
+                    >
                         <strong> {{.Title}} </strong>
 
                         {{if .Description}}
+
                         <p>{{.Description}}</p>
-                        <small> ⚔️ {{.Rarity}} </small>
+
                         {{end}}
+
+                        <small> ⚔️ {{.Rarity}} </small>
 
                         <form action="/cards/move" method="POST">
                             <input
@@ -99,12 +129,22 @@
 
                     {{range .Cards}} {{if eq .Status "doing"}}
 
-                    <div class="card" style="border-left: 6px solid {{.Color}}">
+                    <div
+                        class="card"
+                        style="
+border-left:
+6px solid {{.Color}}
+"
+                    >
                         <strong> {{.Title}} </strong>
 
                         {{if .Description}}
+
                         <p>{{.Description}}</p>
+
                         {{end}}
+
+                        <small> ⚔️ {{.Rarity}} </small>
 
                         <form action="/cards/move" method="POST">
                             <input
@@ -133,12 +173,21 @@
 
                     {{range .Cards}} {{if eq .Status "done"}}
 
-                    <div class="card" style="border-left: 6px solid {{.Color}}">
+                    <div
+                        class="card"
+                        style="border-left:
+                            6px solid {{.Color}}
+                            "
+                    >
                         <strong> {{.Title}} </strong>
 
                         {{if .Description}}
+
                         <p>{{.Description}}</p>
+
                         {{end}}
+
+                        <small> ⚔️ {{.Rarity}} </small>
                     </div>
 
                     {{end}} {{end}}
