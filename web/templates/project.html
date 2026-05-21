@@ -1,53 +1,130 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <title>{{.Name}} - QuestBoard</title>
-    <link rel="stylesheet" href="/static/css/style.css">
-</head>
-<body>
-    <header>
-        <h1><a href="/">QuestBoard</a> / {{.Name}}</h1>
-    </header>
+    <head>
+        <meta charset="UTF-8" />
+        <title>{{.Name}} - QuestBoard</title>
 
-    <main>
-        <section class="add-card">
-            <h2>Novo Card</h2>
-            <form action="/cards" method="POST">
-                <input type="hidden" name="project_id" value="{{.ID}}">
-                <input type="text" name="title" placeholder="O que precisa ser feito?" required>
-                <button type="submit">Criar Card</button>
-            </form>
-        </section>
+        <link rel="stylesheet" href="/static/css/style.css" />
+    </head>
 
-        <div class="kanban-board">
-            <div class="column">
-                <h3>Backlog</h3>
-                {{range .Cards}}
-                    {{if eq .Status "backlog"}}
-                        <div class="card">{{.Title}}</div>
-                    {{end}}
-                {{end}}
+    <body>
+        <header>
+            <h1>
+                <a href="/">QuestBoard</a>
+                / {{.Name}}
+            </h1>
+        </header>
+
+        <main>
+            <section class="add-card">
+                <h2>Novo Card</h2>
+
+                <form action="/cards" method="POST">
+                    <input type="hidden" name="project_id" value="{{.ID}}" />
+
+                    <input
+                        type="text"
+                        name="title"
+                        placeholder="Nome da Quest"
+                        required
+                    />
+
+                    <textarea
+                        name="description"
+                        placeholder="Descreva o objetivo..."
+                    ></textarea>
+
+                    <button type="submit">Criar Card</button>
+                </form>
+            </section>
+
+            <div class="kanban-board">
+                <!-- BACKLOG -->
+
+                <div class="column">
+                    <h3>Backlog</h3>
+
+                    {{range .Cards}} {{if eq .Status "backlog"}}
+
+                    <div class="card">
+                        <strong> {{.Title}} </strong>
+
+                        {{if .Description}}
+                        <p>{{.Description}}</p>
+                        {{end}}
+
+                        <form action="/cards/move" method="POST">
+                            <input
+                                type="hidden"
+                                name="project_id"
+                                value="{{$.ID}}"
+                            />
+
+                            <input
+                                type="hidden"
+                                name="card_id"
+                                value="{{.ID}}"
+                            />
+
+                            <button type="submit">Avançar →</button>
+                        </form>
+                    </div>
+
+                    {{end}} {{end}}
+                </div>
+
+                <!-- DOING -->
+
+                <div class="column">
+                    <h3>Doing</h3>
+
+                    {{range .Cards}} {{if eq .Status "doing"}}
+
+                    <div class="card">
+                        <strong> {{.Title}} </strong>
+
+                        {{if .Description}}
+                        <p>{{.Description}}</p>
+                        {{end}}
+
+                        <form action="/cards/move" method="POST">
+                            <input
+                                type="hidden"
+                                name="project_id"
+                                value="{{$.ID}}"
+                            />
+
+                            <input
+                                type="hidden"
+                                name="card_id"
+                                value="{{.ID}}"
+                            />
+
+                            <button type="submit">Avançar →</button>
+                        </form>
+                    </div>
+
+                    {{end}} {{end}}
+                </div>
+
+                <!-- DONE -->
+
+                <div class="column">
+                    <h3>Done</h3>
+
+                    {{range .Cards}} {{if eq .Status "done"}}
+
+                    <div class="card">
+                        <strong> {{.Title}} </strong>
+
+                        {{if .Description}}
+                        <p>{{.Description}}</p>
+                        {{end}}
+                    </div>
+
+                    {{end}} {{end}}
+                </div>
             </div>
-
-            <div class="column">
-                <h3>Doing</h3>
-                {{range .Cards}}
-                    {{if eq .Status "doing"}}
-                        <div class="card">{{.Title}}</div>
-                    {{end}}
-                {{end}}
-            </div>
-
-            <div class="column">
-                <h3>Done</h3>
-                {{range .Cards}}
-                    {{if eq .Status "done"}}
-                        <div class="card">{{.Title}}</div>
-                    {{end}}
-                {{end}}
-            </div>
-        </div>
-    </main>
-</body>
+        </main>
+    </body>
 </html>

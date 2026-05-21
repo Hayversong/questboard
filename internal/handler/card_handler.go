@@ -23,6 +23,7 @@ func CreateCardHandler(w http.ResponseWriter, r *http.Request) {
 
 	projectID := r.FormValue("project_id")
 	title := r.FormValue("title")
+	description := r.FormValue("description")
 
 	if projectID == "" || title == "" {
 		http.Error(w, "ID do projeto e título são obrigatórios", http.StatusBadRequest)
@@ -40,9 +41,10 @@ func CreateCardHandler(w http.ResponseWriter, r *http.Request) {
 	for i := range projects {
 		if projects[i].ID == projectID {
 			newCard := model.Card{
-				ID:     fmt.Sprintf("%d", time.Now().UnixNano()), // Gerador de ID simples
-				Title:  title,
-				Status: "backlog",
+				ID:          fmt.Sprintf("%d", time.Now().UnixNano()),
+				Title:       title,
+				Description: description,
+				Status:      "backlog",
 			}
 			projects[i].Cards = append(projects[i].Cards, newCard)
 			found = true

@@ -35,7 +35,16 @@ func LoadProjects() ([]model.Project, error) {
 	)
 
 	if err != nil {
+
+		if os.IsNotExist(err) {
+			return []model.Project{}, nil
+		}
+
 		return nil, err
+	}
+
+	if len(data) == 0 {
+		return []model.Project{}, nil
 	}
 
 	var projects []model.Project

@@ -14,6 +14,10 @@ func main() {
 
 	// Rotas de ação
 	http.HandleFunc("/cards", handler.CreateCardHandler)
+	http.HandleFunc(
+		"/cards/move",
+		handler.MoveCardHandler,
+	)
 
 	log.Println("Servidor rodando em http://localhost:8080")
 
