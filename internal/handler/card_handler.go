@@ -24,6 +24,7 @@ func CreateCardHandler(w http.ResponseWriter, r *http.Request) {
 	projectID := r.FormValue("project_id")
 	title := r.FormValue("title")
 	description := r.FormValue("description")
+	rarity := r.FormValue("rarity")
 
 	if projectID == "" || title == "" {
 		http.Error(w, "ID do projeto e título são obrigatórios", http.StatusBadRequest)
@@ -45,6 +46,7 @@ func CreateCardHandler(w http.ResponseWriter, r *http.Request) {
 				Title:       title,
 				Description: description,
 				Status:      "backlog",
+				Rarity:      rarity,
 			}
 			projects[i].Cards = append(projects[i].Cards, newCard)
 			found = true

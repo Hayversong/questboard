@@ -7,19 +7,36 @@
         "ID": "1779393271937341606",
         "Title": "Sistema de inventário",
         "Description": "Permitir equipar armas e salvar progresso",
-        "Status": "done"
+        "Status": "done",
+        "Rarity": ""
       },
       {
         "ID": "1779393712145776413",
         "Title": "teste1",
         "Description": "",
-        "Status": "backlog"
+        "Status": "backlog",
+        "Rarity": ""
       },
       {
         "ID": "1779393717370572108",
         "Title": "teste2",
         "Description": "",
-        "Status": "done"
+        "Status": "done",
+        "Rarity": ""
+      },
+      {
+        "ID": "1779394402087948693",
+        "Title": "sistema de build",
+        "Description": "",
+        "Status": "done",
+        "Rarity": "legendary"
+      },
+      {
+        "ID": "1779394596473276401",
+        "Title": "Combate",
+        "Description": "",
+        "Status": "done",
+        "Rarity": "epic"
       }
     ]
   }
