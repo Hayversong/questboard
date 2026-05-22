@@ -9,7 +9,6 @@ import (
 	"github.com/Hayversong/questboard/internal/storage"
 )
 
-// HomeHandler renderiza a lista de projetos
 func HomeHandler(
 	w http.ResponseWriter,
 	r *http.Request,
@@ -18,26 +17,22 @@ func HomeHandler(
 	projects, err := storage.LoadProjects()
 
 	if err != nil {
-
 		http.Error(
 			w,
 			err.Error(),
 			http.StatusInternalServerError,
 		)
-
 		return
 	}
 
 	stats, err := service.DashboardStats()
 
 	if err != nil {
-
 		http.Error(
 			w,
 			err.Error(),
 			http.StatusInternalServerError,
 		)
-
 		return
 	}
 
@@ -54,6 +49,43 @@ func HomeHandler(
 	)
 
 	if err != nil {
+		http.Error(
+			w,
+			err.Error(),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+	tmpl.Execute(
+		w,
+		data,
+	)
+}
+
+func ProjectDetailHandler(
+	w http.ResponseWriter,
+	r *http.Request,
+) {
+
+	id := r.URL.Query().Get(
+		"id",
+	)
+
+	if id == "" {
+
+		http.Error(
+			w,
+			"ID obrigatório",
+			http.StatusBadRequest,
+		)
+
+		return
+	}
+
+	projects, err := storage.LoadProjects()
+
+	if err != nil {
 
 		http.Error(
 			w,
@@ -64,8 +96,37 @@ func HomeHandler(
 		return
 	}
 
-	tmpl.Execute(
+	for _, project := range projects {
+
+		if project.ID == id {
+
+			tmpl, err := template.ParseFiles(
+				"web/templates/project.html",
+			)
+
+			if err != nil {
+
+				http.Error(
+					w,
+					err.Error(),
+					http.StatusInternalServerError,
+				)
+
+				return
+			}
+
+			tmpl.Execute(
+				w,
+				project,
+			)
+
+			return
+		}
+	}
+
+	http.Error(
 		w,
-		data,
+		"Projeto não encontrado",
+		http.StatusNotFound,
 	)
 }
