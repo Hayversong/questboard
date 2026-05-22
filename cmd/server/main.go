@@ -22,6 +22,10 @@ func main() {
 		"/projects",
 		handler.CreateProjectHandler,
 	)
+	http.HandleFunc(
+		"/projects/delete",
+		handler.DeleteProjectHandler,
+	)
 
 	log.Println("Servidor rodando em http://localhost:8080")
 
