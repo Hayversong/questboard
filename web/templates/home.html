@@ -47,6 +47,19 @@
 
                 <button type="submit">🗑️ Excluir</button>
             </form>
+
+            <form action="/projects/rename" method="POST">
+                <input type="hidden" name="project_id" value="{{.ID}}" />
+
+                <input
+                    type="text"
+                    name="name"
+                    placeholder="Novo nome"
+                    required
+                />
+
+                <button type="submit">✏️ Renomear</button>
+            </form>
         </div>
 
         <hr />
