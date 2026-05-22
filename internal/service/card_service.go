@@ -33,13 +33,10 @@ func CreateCard(
 				time.Now().UnixNano(),
 			),
 
-			Title: title,
-
+			Title:       title,
 			Description: description,
-
-			Status: "backlog",
-
-			Rarity: rarity,
+			Status:      "backlog",
+			Rarity:      rarity,
 		}
 
 		projects[i].Cards = append(
@@ -88,6 +85,10 @@ func MoveCard(
 			case "doing":
 				card.Status = "done"
 			}
+
+			return storage.SaveProjects(
+				projects,
+			)
 		}
 	}
 

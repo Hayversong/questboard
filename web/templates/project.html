@@ -189,7 +189,7 @@
                         <p>{{.Description}}</p>
                         {{end}}
 
-                        <small> ⚔️ {{.Rarity}} </small>
+                        <small> ⚔️ {{.Rarity}} +{{.XP}} XP </small>
 
                         <form action="/cards/move" method="POST">
                             <input
@@ -204,7 +204,14 @@
                                 value="{{.ID}}"
                             />
 
-                            <button type="submit">Avançar →</button>
+                            <button
+                                type="submit"
+                                onclick="
+                                    return confirm('Concluir esta quest?');
+                                "
+                            >
+                                Concluir ✅
+                            </button>
                         </form>
 
                         <form action="/cards/delete" method="POST">
