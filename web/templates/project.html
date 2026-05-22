@@ -75,6 +75,10 @@
                         <option value="legendary">Lendária</option>
                     </select>
 
+                    <br />
+
+                    <input type="date" name="deadline" />
+
                     <button type="submit">Criar Card</button>
                 </form>
             </section>
@@ -87,7 +91,13 @@
 
                     {{range .Cards}} {{if eq .Status "backlog"}}
 
-                    <div class="card" style="border-left:6px solid {{.Color}}">
+                    <div
+                        class="card"
+                        style="
+border-left:
+6px solid {{.Color}}
+"
+                    >
                         <strong> {{.Title}} </strong>
 
                         {{if .Description}}
@@ -96,7 +106,17 @@
 
                         {{end}}
 
-                        <small> ⚔️ {{.Rarity}} </small>
+                        <small>
+                            ⚔️ {{.Rarity}} {{if .DeadlineLabel}}
+
+                            <br />
+
+                            ⏳ {{.DeadlineLabel}} {{end}} {{if .IsLate}}
+
+                            <br />
+
+                            ⚠️ ATRASADA {{end}}
+                        </small>
 
                         <form action="/cards/move" method="POST">
                             <input
@@ -167,6 +187,14 @@
                                     <option value="legendary">Lendária</option>
                                 </select>
 
+                                <br />
+
+                                <input
+                                    type="date"
+                                    name="deadline"
+                                    value="{{.DeadlineLabel}}"
+                                />
+
                                 <button type="submit">Salvar</button>
                             </form>
                         </details>
@@ -182,14 +210,32 @@
 
                     {{range .Cards}} {{if eq .Status "doing"}}
 
-                    <div class="card" style="border-left:6px solid {{.Color}}">
-                        <strong>{{.Title}}</strong>
+                    <div
+                        class="card"
+                        style="
+border-left:
+6px solid {{.Color}}
+"
+                    >
+                        <strong> {{.Title}} </strong>
 
                         {{if .Description}}
+
                         <p>{{.Description}}</p>
+
                         {{end}}
 
-                        <small> ⚔️ {{.Rarity}} +{{.XP}} XP </small>
+                        <small>
+                            ⚔️ {{.Rarity}} — +{{.XP}} XP {{if .DeadlineLabel}}
+
+                            <br />
+
+                            ⏳ {{.DeadlineLabel}} {{end}} {{if .IsLate}}
+
+                            <br />
+
+                            ⚠️ ATRASADA {{end}}
+                        </small>
 
                         <form action="/cards/move" method="POST">
                             <input
@@ -241,14 +287,28 @@
 
                     {{range .Cards}} {{if eq .Status "done"}}
 
-                    <div class="card" style="border-left:6px solid {{.Color}}">
+                    <div
+                        class="card"
+                        style="
+border-left:
+6px solid {{.Color}}
+"
+                    >
                         <strong> {{.Title}} </strong>
 
                         {{if .Description}}
+
                         <p>{{.Description}}</p>
+
                         {{end}}
 
-                        <small> ⚔️ {{.Rarity}} </small>
+                        <small>
+                            ⚔️ {{.Rarity}} {{if .Deadline}}
+
+                            <br />
+
+                            ✅ {{.DeadlineLabel}} {{end}}
+                        </small>
 
                         <form action="/cards/delete" method="POST">
                             <input

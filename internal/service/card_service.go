@@ -13,6 +13,7 @@ func CreateCard(
 	title string,
 	description string,
 	rarity string,
+	deadline string,
 ) error {
 
 	projects, err := storage.LoadProjects()
@@ -37,6 +38,7 @@ func CreateCard(
 			Description: description,
 			Status:      "backlog",
 			Rarity:      rarity,
+			Deadline: deadline,
 		}
 
 		projects[i].Cards = append(

@@ -1,15 +1,17 @@
 <!doctype html>
 
-<html>
+<html lang="pt-br">
     <head>
+        <meta charset="UTF-8" />
+
         <title>QuestBoard</title>
+
+        <link rel="stylesheet" href="/static/css/style.css" />
     </head>
 
     <body>
-        <h1>QuestBoard</h1>
-
-        <section>
-            <h2>Dashboard</h2>
+        <header>
+            <h1>🎮 QuestBoard</h1>
 
             <p>Projetos: {{.Stats.Projects}}</p>
 
@@ -17,39 +19,58 @@
 
             <p>Concluídas: {{.Stats.Done}}</p>
 
-            <p>XP Total: {{.Stats.XP}}</p>
-        </section>
+            <p>⭐ XP Total: {{.Stats.XP}}</p>
+        </header>
 
-        <hr />
+        <main>
+            <section class="add-card">
+                <h2>Novo Projeto</h2>
 
-        <section>
-            <h2>Novo Projeto</h2>
+                <form action="/projects" method="POST">
+                    <input
+                        type="text"
+                        name="name"
+                        placeholder="Nome do projeto"
+                        required
+                    />
 
-            <form action="/projects" method="POST">
-                <input name="name" required />
+                    <button type="submit">Criar Projeto</button>
+                </form>
+            </section>
 
-                <button>Criar</button>
-            </form>
-        </section>
+            <section>
+                <h2>Projetos</h2>
 
-        <hr />
+                {{range .Projects}}
 
-        {{range .Projects}}
+                <div class="card">
+                    <h3>
+                        <a href="/project?id={{.ID}}"> {{.Name}} </a>
+                    </h3>
 
-        <div>
-            <h2>
-                <a href="/project?id={{.ID}}"> {{.Name}} </a>
-            </h2>
+                    <p>📋 {{len .Cards}} quests</p>
 
-            <form action="/projects/delete" method="POST">
-                <input type="hidden" name="project_id" value="{{.ID}}" />
+                    <p>📈 {{.Progress}}%</p>
 
-                <button>Excluir</button>
-            </form>
-        </div>
+                    <progress value="{{.Progress}}" max="100"></progress>
 
-        <hr />
+                    <form action="/projects/delete" method="POST">
+                        <input
+                            type="hidden"
+                            name="project_id"
+                            value="{{.ID}}"
+                        />
 
-        {{end}}
+                        <button>Excluir</button>
+                    </form>
+                </div>
+
+                {{else}}
+
+                <p>Nenhum projeto ainda</p>
+
+                {{end}}
+            </section>
+        </main>
     </body>
 </html>

@@ -42,6 +42,9 @@ func UpdateCardHandler(
 	rarity := r.FormValue(
 		"rarity",
 	)
+	deadline := r.FormValue(
+		"deadline",
+)
 
 	err := service.UpdateCard(
 		projectID,
@@ -49,6 +52,7 @@ func UpdateCardHandler(
 		title,
 		description,
 		rarity,
+		deadline,
 	)
 
 	if err != nil {

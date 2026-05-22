@@ -8,27 +8,40 @@ import (
 )
 
 func main() {
-	// Rotas de visualização
-	http.HandleFunc("/", handler.HomeHandler)
-	http.HandleFunc("/project", handler.ProjectDetailHandler)
 
-	// Rotas de ação
-	http.HandleFunc("/cards", handler.CreateCardHandler)
+	// Arquivos estáticos
+	http.Handle(
+		"/static/",
+		http.StripPrefix(
+			"/static/",
+			http.FileServer(
+				http.Dir(
+					"web/static",
+				),
+			),
+		),
+	)
+
+	// Visualização
+	http.HandleFunc(
+		"/",
+		handler.HomeHandler,
+	)
+
+	http.HandleFunc(
+		"/project",
+		handler.ProjectDetailHandler,
+	)
+
+	// Cards
+	http.HandleFunc(
+		"/cards",
+		handler.CreateCardHandler,
+	)
+
 	http.HandleFunc(
 		"/cards/move",
 		handler.MoveCardHandler,
-	)
-	http.HandleFunc(
-		"/projects",
-		handler.CreateProjectHandler,
-	)
-	http.HandleFunc(
-		"/projects/delete",
-		handler.DeleteProjectHandler,
-	)
-	http.HandleFunc(
-		"/projects/rename",
-		handler.RenameProjectHandler,
 	)
 
 	http.HandleFunc(
@@ -41,10 +54,30 @@ func main() {
 		handler.UpdateCardHandler,
 	)
 
-	log.Println("Servidor rodando em http://localhost:8080")
+	// Projetos
+	http.HandleFunc(
+		"/projects",
+		handler.CreateProjectHandler,
+	)
 
-	err := http.ListenAndServe(":8080", nil)
-	if err != nil {
-		log.Fatal(err)
-	}
+	http.HandleFunc(
+		"/projects/delete",
+		handler.DeleteProjectHandler,
+	)
+
+	http.HandleFunc(
+		"/projects/rename",
+		handler.RenameProjectHandler,
+	)
+
+	log.Println(
+		"Servidor rodando em http://localhost:8080",
+	)
+
+	log.Fatal(
+		http.ListenAndServe(
+			":8080",
+			nil,
+		),
+	)
 }

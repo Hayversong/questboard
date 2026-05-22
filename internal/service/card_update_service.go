@@ -12,6 +12,7 @@ func UpdateCard(
 	title string,
 	description string,
 	rarity string,
+	deadline string,
 ) error {
 
 	projects, err := storage.LoadProjects()
@@ -37,6 +38,7 @@ func UpdateCard(
 			card.Title = title
 			card.Description = description
 			card.Rarity = rarity
+			card.Deadline = deadline
 
 			return storage.SaveProjects(
 				projects,

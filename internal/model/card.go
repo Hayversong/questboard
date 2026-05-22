@@ -1,11 +1,83 @@
 package model
 
+import (
+	"fmt"
+	"time"
+)
+
 type Card struct {
 	ID          string
 	Title       string
 	Description string
 	Status      string
 	Rarity      string
+	Deadline    string
+}
+
+func (c Card) IsLate() bool {
+
+	if c.Deadline == "" {
+		return false
+	}
+
+	deadline, err := time.Parse(
+		"2006-01-02",
+		c.Deadline,
+	)
+
+	if err != nil {
+		return false
+	}
+
+	return time.Now().After(deadline) &&
+		c.Status != "done"
+}
+
+func (c Card) DeadlineLabel() string {
+
+	if c.Deadline == "" {
+		return ""
+	}
+
+	deadline, err := time.Parse(
+		"2006-01-02",
+		c.Deadline,
+	)
+
+	if err != nil {
+		return ""
+	}
+
+	now := time.Now()
+
+	days := int(
+		deadline.Sub(now).Hours() / 24,
+	)
+
+	if c.Status == "done" {
+		return "Concluída"
+	}
+
+	if days < 0 {
+
+		return fmt.Sprintf(
+			"Atrasada há %d dias",
+			-days,
+		)
+	}
+
+	if days == 0 {
+		return "Vence hoje"
+	}
+
+	if days == 1 {
+		return "Vence amanhã"
+	}
+
+	return fmt.Sprintf(
+		"Vence em %d dias",
+		days,
+	)
 }
 
 func (c Card) XP() int {

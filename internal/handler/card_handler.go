@@ -51,6 +51,9 @@ func CreateCardHandler(
 	rarity := r.FormValue(
 		"rarity",
 	)
+	deadline := r.FormValue(
+		"deadline",
+	)
 
 	if projectID == "" || title == "" {
 
@@ -68,6 +71,7 @@ func CreateCardHandler(
 		title,
 		description,
 		rarity,
+		deadline,
 	)
 
 	if err != nil {
