@@ -50,19 +50,6 @@
   {
     "ID": "1779396542200800223",
     "Name": "Dungeon Survivor",
-    "Cards": [
-      {
-        "ID": "1779396552808819023",
-        "Title": "teste1",
-        "Description": "",
-        "Status": "done",
-        "Rarity": "common"
-      }
-    ]
-  },
-  {
-    "ID": "1779412103318838562",
-    "Name": "Dungeon Survivor Remake",
-    "Cards": []
+    "Cards": null
   }
 ]
