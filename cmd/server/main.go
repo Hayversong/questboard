@@ -36,6 +36,11 @@ func main() {
 		handler.DeleteCardHandler,
 	)
 
+	http.HandleFunc(
+		"/cards/update",
+		handler.UpdateCardHandler,
+)
+
 	log.Println("Servidor rodando em http://localhost:8080")
 
 	err := http.ListenAndServe(":8080", nil)

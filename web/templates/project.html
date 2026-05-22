@@ -87,13 +87,7 @@
 
                     {{range .Cards}} {{if eq .Status "backlog"}}
 
-                    <div
-                        class="card"
-                        style="
-border-left:
-6px solid {{.Color}}
-"
-                    >
+                    <div class="card" style="border-left:6px solid {{.Color}}">
                         <strong> {{.Title}} </strong>
 
                         {{if .Description}}
@@ -120,11 +114,7 @@ border-left:
                             <button type="submit">Avançar →</button>
                         </form>
 
-                        <form
-                            action="/cards/delete"
-                            method="POST"
-                            onsubmit="return confirm('Excluir quest?');"
-                        >
+                        <form action="/cards/delete" method="POST">
                             <input
                                 type="hidden"
                                 name="project_id"
@@ -139,6 +129,47 @@ border-left:
 
                             <button type="submit">🗑️</button>
                         </form>
+
+                        <details>
+                            <summary>📝 Editar</summary>
+
+                            <form action="/cards/update" method="POST">
+                                <input
+                                    type="hidden"
+                                    name="project_id"
+                                    value="{{$.ID}}"
+                                />
+
+                                <input
+                                    type="hidden"
+                                    name="card_id"
+                                    value="{{.ID}}"
+                                />
+
+                                <input
+                                    type="text"
+                                    name="title"
+                                    value="{{.Title}}"
+                                    required
+                                />
+
+                                <textarea name="description">
+{{.Description}}</textarea
+                                >
+
+                                <select name="rarity">
+                                    <option value="common">Comum</option>
+
+                                    <option value="rare">Rara</option>
+
+                                    <option value="epic">Épica</option>
+
+                                    <option value="legendary">Lendária</option>
+                                </select>
+
+                                <button type="submit">Salvar</button>
+                            </form>
+                        </details>
                     </div>
 
                     {{end}} {{end}}
@@ -151,19 +182,11 @@ border-left:
 
                     {{range .Cards}} {{if eq .Status "doing"}}
 
-                    <div
-                        class="card"
-                        style="
-border-left:
-6px solid {{.Color}}
-"
-                    >
-                        <strong> {{.Title}} </strong>
+                    <div class="card" style="border-left:6px solid {{.Color}}">
+                        <strong>{{.Title}}</strong>
 
                         {{if .Description}}
-
                         <p>{{.Description}}</p>
-
                         {{end}}
 
                         <small> ⚔️ {{.Rarity}} </small>
@@ -184,11 +207,7 @@ border-left:
                             <button type="submit">Avançar →</button>
                         </form>
 
-                        <form
-                            action="/cards/delete"
-                            method="POST"
-                            onsubmit="return confirm('Excluir quest?');"
-                        >
+                        <form action="/cards/delete" method="POST">
                             <input
                                 type="hidden"
                                 name="project_id"
@@ -215,28 +234,16 @@ border-left:
 
                     {{range .Cards}} {{if eq .Status "done"}}
 
-                    <div
-                        class="card"
-                        style="
-border-left:
-6px solid {{.Color}}
-"
-                    >
+                    <div class="card" style="border-left:6px solid {{.Color}}">
                         <strong> {{.Title}} </strong>
 
                         {{if .Description}}
-
                         <p>{{.Description}}</p>
-
                         {{end}}
 
-                        <small> ⚔️{{.Rarity}} </small>
+                        <small> ⚔️ {{.Rarity}} </small>
 
-                        <form
-                            action="/cards/delete"
-                            method="POST"
-                            onsubmit="return confirm('Excluir quest?');"
-                        >
+                        <form action="/cards/delete" method="POST">
                             <input
                                 type="hidden"
                                 name="project_id"
