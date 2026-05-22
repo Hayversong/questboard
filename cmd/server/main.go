@@ -1,50 +1,132 @@
-package main
+package handler
 
 import (
-	"log"
+	"html/template"
 	"net/http"
 
-	"github.com/Hayversong/questboard/internal/handler"
+	"github.com/Hayversong/questboard/internal/model"
+	"github.com/Hayversong/questboard/internal/service"
+	"github.com/Hayversong/questboard/internal/storage"
 )
 
-func main() {
-	// Rotas de visualização
-	http.HandleFunc("/", handler.HomeHandler)
-	http.HandleFunc("/project", handler.ProjectDetailHandler)
+func HomeHandler(
+	w http.ResponseWriter,
+	r *http.Request,
+) {
 
-	// Rotas de ação
-	http.HandleFunc("/cards", handler.CreateCardHandler)
-	http.HandleFunc(
-		"/cards/move",
-		handler.MoveCardHandler,
-	)
-	http.HandleFunc(
-		"/projects",
-		handler.CreateProjectHandler,
-	)
-	http.HandleFunc(
-		"/projects/delete",
-		handler.DeleteProjectHandler,
-	)
-	http.HandleFunc(
-		"/projects/rename",
-		handler.RenameProjectHandler,
-	)
+	projects, err := storage.LoadProjects()
 
-	http.HandleFunc(
-		"/cards/delete",
-		handler.DeleteCardHandler,
-	)
-
-	http.HandleFunc(
-		"/cards/update",
-		handler.UpdateCardHandler,
-)
-
-	log.Println("Servidor rodando em http://localhost:8080")
-
-	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
-		log.Fatal(err)
+		http.Error(
+			w,
+			err.Error(),
+			http.StatusInternalServerError,
+		)
+		return
 	}
+
+	stats, err := service.DashboardStats()
+
+	if err != nil {
+		http.Error(
+			w,
+			err.Error(),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+	data := struct {
+		Projects []model.Project
+		Stats    model.Dashboard
+	}{
+		Projects: projects,
+		Stats:    stats,
+	}
+
+	tmpl, err := template.ParseFiles(
+		"web/templates/home.html",
+	)
+
+	if err != nil {
+		http.Error(
+			w,
+			err.Error(),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+	tmpl.Execute(
+		w,
+		data,
+	)
+}
+
+func ProjectDetailHandler(
+	w http.ResponseWriter,
+	r *http.Request,
+) {
+
+	id := r.URL.Query().Get(
+		"id",
+	)
+
+	if id == "" {
+
+		http.Error(
+			w,
+			"ID obrigatório",
+			http.StatusBadRequest,
+		)
+
+		return
+	}
+
+	projects, err := storage.LoadProjects()
+
+	if err != nil {
+
+		http.Error(
+			w,
+			err.Error(),
+			http.StatusInternalServerError,
+		)
+
+		return
+	}
+
+	for _, project := range projects {
+
+		if project.ID == id {
+
+			tmpl, err := template.ParseFiles(
+				"web/templates/project.html",
+			)
+
+			if err != nil {
+
+				http.Error(
+					w,
+					err.Error(),
+					http.StatusInternalServerError,
+				)
+
+				return
+			}
+
+			tmpl.Execute(
+				w,
+				project,
+			)
+
+			return
+		}
+	}
+
+	http.Error(
+		w,
+		"Projeto não encontrado",
+		http.StatusNotFound,
+	)
 }

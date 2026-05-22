@@ -1,9 +1,7 @@
 <!doctype html>
 
-<html lang="pt-br">
+<html>
     <head>
-        <meta charset="UTF-8" />
-
         <title>QuestBoard</title>
     </head>
 
@@ -11,54 +9,42 @@
         <h1>QuestBoard</h1>
 
         <section>
+            <h2>Dashboard</h2>
+
+            <p>Projetos: {{.Stats.Projects}}</p>
+
+            <p>Quests: {{.Stats.Cards}}</p>
+
+            <p>Concluídas: {{.Stats.Done}}</p>
+
+            <p>XP Total: {{.Stats.XP}}</p>
+        </section>
+
+        <hr />
+
+        <section>
             <h2>Novo Projeto</h2>
 
             <form action="/projects" method="POST">
-                <input
-                    type="text"
-                    name="name"
-                    placeholder="Nome do Projeto"
-                    required
-                />
+                <input name="name" required />
 
-                <button type="submit">Criar Projeto</button>
+                <button>Criar</button>
             </form>
         </section>
 
         <hr />
 
-        <p>Projetos:</p>
-
-        {{range .}}
+        {{range .Projects}}
 
         <div>
             <h2>
                 <a href="/project?id={{.ID}}"> {{.Name}} </a>
             </h2>
 
-            <p>📋 Cards: {{len .Cards}}</p>
-
-            <form
-                action="/projects/delete"
-                method="POST"
-                onsubmit="return confirm('Excluir projeto?');"
-            >
+            <form action="/projects/delete" method="POST">
                 <input type="hidden" name="project_id" value="{{.ID}}" />
 
-                <button type="submit">🗑️ Excluir</button>
-            </form>
-
-            <form action="/projects/rename" method="POST">
-                <input type="hidden" name="project_id" value="{{.ID}}" />
-
-                <input
-                    type="text"
-                    name="name"
-                    placeholder="Novo nome"
-                    required
-                />
-
-                <button type="submit">✏️ Renomear</button>
+                <button>Excluir</button>
             </form>
         </div>
 
