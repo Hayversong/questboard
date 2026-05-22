@@ -38,3 +38,36 @@ func CreateProject(
 		projects,
 	)
 }
+
+func DashboardStats() (model.Dashboard, error) {
+
+	projects, err := storage.LoadProjects()
+
+	if err != nil {
+		return model.Dashboard{}, err
+	}
+
+	stats := model.Dashboard{}
+
+	stats.Projects = len(
+		projects,
+	)
+
+	for _, project := range projects {
+
+		stats.XP += project.XP()
+
+		stats.Cards += len(
+			project.Cards,
+		)
+
+		for _, card := range project.Cards {
+
+			if card.Status == "done" {
+				stats.Done++
+			}
+		}
+	}
+
+	return stats, nil
+}
