@@ -176,10 +176,10 @@ done
 
 ## Em desenvolvimento
 
-- [ ] Criar cards
-- [ ] Excluir cards
-- [ ] Mover entre colunas
-- [ ] Melhorar UI
+- [x] Criar cards
+- [x] Excluir cards
+- [x] Mover entre colunas
+- [x] Melhorar UI
 - [ ] Validação de dados
 
 ---
@@ -189,7 +189,7 @@ done
 - [ ] SQLite
 - [ ] API REST
 - [ ] Drag and Drop
-- [ ] Dashboard
+- [x] Dashboard
 - [ ] Tags
 - [ ] Docker
 - [ ] Deploy
