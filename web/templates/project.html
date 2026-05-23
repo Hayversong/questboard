@@ -81,6 +81,28 @@
 
             {{end}}
 
+            <section class="activity-section">
+                <h3>Atividade Recente</h3>
+
+                <div class="activity-list">
+                    {{range .Activities}}
+
+                    <div class="activity-item">
+                        <small class="activity-time"> {{.Time}} </small>
+
+                        <p class="activity-message">{{.Message}}</p>
+                    </div>
+
+                    {{else}}
+
+                    <div class="activity-item">
+                        Nenhuma atividade registrada
+                    </div>
+
+                    {{end}}
+                </div>
+            </section>
+
             <section class="form-section">
                 <h3>Adicionar Tarefa</h3>
 

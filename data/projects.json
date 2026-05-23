@@ -59,7 +59,8 @@
         "Rarity": "common",
         "Deadline": "2026-05-06"
       }
-    ]
+    ],
+    "Activities": null
   },
   {
     "ID": "1779396542200800223",
@@ -72,6 +73,36 @@
         "Status": "done",
         "Rarity": "epic",
         "Deadline": "2026-05-24"
+      },
+      {
+        "ID": "1779552637200859850",
+        "Title": "inventário",
+        "Description": "dois",
+        "Status": "done",
+        "Rarity": "rare",
+        "Deadline": "2026-05-24"
+      }
+    ],
+    "Activities": [
+      {
+        "Message": "🗑️ Quest removida: inventário",
+        "Time": "23/05 13:11"
+      },
+      {
+        "Message": "⭐ Quest criada: inventário",
+        "Time": "23/05 13:11"
+      },
+      {
+        "Message": "✅ Quest concluída: inventário",
+        "Time": "23/05 13:10"
+      },
+      {
+        "Message": "🚀 Quest iniciada: inventário",
+        "Time": "23/05 13:10"
+      },
+      {
+        "Message": "⭐ Quest criada: inventário",
+        "Time": "23/05 13:10"
       }
     ]
   }

@@ -16,7 +16,8 @@ func CreateCard(
 	deadline string,
 ) error {
 
-	projects, err := storage.LoadProjects()
+	projects, err :=
+		storage.LoadProjects()
 
 	if err != nil {
 		return err
@@ -34,24 +35,34 @@ func CreateCard(
 				time.Now().UnixNano(),
 			),
 
-			Title:       title,
+			Title: title,
+
 			Description: description,
-			Status:      "backlog",
-			Rarity:      rarity,
+
+			Status: "backlog",
+
+			Rarity: rarity,
+
 			Deadline: deadline,
 		}
 
-		projects[i].Cards = append(
-			projects[i].Cards,
-			card,
+		projects[i].Cards =
+			append(
+				projects[i].Cards,
+				card,
+			)
+
+		AddActivity(
+			&projects[i],
+			"⭐ Quest criada: "+title,
 		)
 
-		break
+		return storage.SaveProjects(
+			projects,
+		)
 	}
 
-	return storage.SaveProjects(
-		projects,
-	)
+	return nil
 }
 
 func MoveCard(
@@ -59,7 +70,8 @@ func MoveCard(
 	cardID string,
 ) error {
 
-	projects, err := storage.LoadProjects()
+	projects, err :=
+		storage.LoadProjects()
 
 	if err != nil {
 		return err
@@ -73,7 +85,8 @@ func MoveCard(
 
 		for c := range projects[p].Cards {
 
-			card := &projects[p].Cards[c]
+			card :=
+				&projects[p].Cards[c]
 
 			if card.ID != cardID {
 				continue
@@ -82,10 +95,30 @@ func MoveCard(
 			switch card.Status {
 
 			case "backlog":
-				card.Status = "doing"
+
+				card.Status =
+					"doing"
+
+				AddActivity(
+					&projects[p],
+					"🚀 Quest iniciada: "+
+						card.Title,
+				)
 
 			case "doing":
-				card.Status = "done"
+
+				card.Status =
+					"done"
+
+				AddActivity(
+					&projects[p],
+					"✅ Quest concluída: "+
+						card.Title,
+				)
+
+			default:
+
+				return nil
 			}
 
 			return storage.SaveProjects(
@@ -94,7 +127,5 @@ func MoveCard(
 		}
 	}
 
-	return storage.SaveProjects(
-		projects,
-	)
+	return nil
 }

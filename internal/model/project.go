@@ -1,9 +1,10 @@
 package model
 
 type Project struct {
-	ID    string
-	Name  string
-	Cards []Card
+	ID         string
+	Name       string
+	Cards      []Card
+	Activities []Activity
 }
 
 func (p Project) Progress() int {

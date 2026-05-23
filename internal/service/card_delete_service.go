@@ -12,7 +12,8 @@ func DeleteCard(
 	cardID string,
 ) error {
 
-	projects, err := storage.LoadProjects()
+	projects, err :=
+		storage.LoadProjects()
 
 	if err != nil {
 		return err
@@ -26,17 +27,39 @@ func DeleteCard(
 
 		var updatedCards []model.Card
 
+		cardDeleted := false
+
 		for _, card := range projects[p].Cards {
 
-			if card.ID != cardID {
-				updatedCards = append(
+			if card.ID == cardID {
+
+				AddActivity(
+					&projects[p],
+					"🗑️ Quest removida: "+
+						card.Title,
+				)
+
+				cardDeleted = true
+
+				continue
+			}
+
+			updatedCards =
+				append(
 					updatedCards,
 					card,
 				)
-			}
 		}
 
-		projects[p].Cards = updatedCards
+		if !cardDeleted {
+
+			return errors.New(
+				"card não encontrado",
+			)
+		}
+
+		projects[p].Cards =
+			updatedCards
 
 		return storage.SaveProjects(
 			projects,
