@@ -55,7 +55,7 @@
         "ID": "1779479270895937075",
         "Title": "teste2222",
         "Description": "",
-        "Status": "doing",
+        "Status": "done",
         "Rarity": "common",
         "Deadline": "2026-05-06"
       }
@@ -64,6 +64,15 @@
   {
     "ID": "1779396542200800223",
     "Name": "Dungeon Survivor",
-    "Cards": null
+    "Cards": [
+      {
+        "ID": "1779512467243468263",
+        "Title": "implementar inventário",
+        "Description": "Sistema de itens",
+        "Status": "done",
+        "Rarity": "epic",
+        "Deadline": "2026-05-24"
+      }
+    ]
   }
 ]

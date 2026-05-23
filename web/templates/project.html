@@ -3,6 +3,7 @@
 <html lang="pt-br">
     <head>
         <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
         <title>{{.Name}} - QuestBoard</title>
 
@@ -10,326 +11,254 @@
     </head>
 
     <body>
-        <header>
-            <h1>
-                <a href="/"> QuestBoard </a>
+        <nav class="navbar">
+            <div class="navbar-container">
+                <a href="/" class="navbar-brand"> QuestBoard </a>
 
-                / {{.Name}}
-            </h1>
+                <h2 class="navbar-title">{{.Name}}</h2>
+            </div>
+        </nav>
 
-            <p>Progresso: {{.Progress}}%</p>
+        <div class="hero">
+            <div class="hero-content">
+                <h1>{{.Name}}</h1>
 
-            <progress value="{{.Progress}}" max="100"></progress>
+                <p>Acompanhe o progresso e organize suas tarefas</p>
+            </div>
+        </div>
 
-            <p>⭐ XP: {{.XP}}</p>
+        <main class="container">
+            <section class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-label">Progresso</div>
 
-            <p>🏆 Level: {{.Level}}</p>
+                    <div class="progress-inline">
+                        <div class="progress-bar-horizontal">
+                            <div
+                                class="progress-fill"
+                                style="width: {{.Progress}}%"
+                            ></div>
+                        </div>
 
-            <p>
-                Título:
+                        <span class="progress-percentage">
+                            {{.Progress}}%
+                        </span>
+                    </div>
+                </div>
 
-                <strong> {{.Rank}} </strong>
-            </p>
+                <div class="stat-box">
+                    <div class="stat-value">{{.XP}}</div>
 
-            <section>
-                <h2>Achievements</h2>
+                    <div class="stat-label">Pontos</div>
+                </div>
 
-                {{range .Achievements}}
+                <div class="stat-box">
+                    <div class="stat-value">{{.Level}}</div>
 
-                <div class="achievement">{{.Title}}</div>
+                    <div class="stat-label">Nível</div>
+                </div>
 
-                {{else}}
+                <div class="stat-box accent">
+                    <div class="stat-value">{{.Rank}}</div>
 
-                <p>Nenhuma conquista ainda</p>
-
-                {{end}}
+                    <div class="stat-label">Posição</div>
+                </div>
             </section>
-        </header>
 
-        <main>
-            <section class="add-card">
-                <h2>Nova Quest</h2>
+            {{if .Achievements}}
 
-                <form action="/cards" method="POST">
+            <section class="achievements-section">
+                <h3>Conquistas</h3>
+
+                <div class="achievements-list">
+                    {{range .Achievements}}
+
+                    <div class="achievement-item">⭐ {{.Title}}</div>
+
+                    {{end}}
+                </div>
+            </section>
+
+            {{end}}
+
+            <section class="form-section">
+                <h3>Adicionar Tarefa</h3>
+
+                <form action="/cards" method="POST" class="task-form">
                     <input type="hidden" name="project_id" value="{{.ID}}" />
 
                     <input
                         type="text"
                         name="title"
-                        placeholder="Nome da Quest"
+                        placeholder="Título"
                         required
+                        class="form-input"
                     />
 
                     <textarea
                         name="description"
-                        placeholder="Descreva o objetivo..."
+                        placeholder="Descrição"
+                        class="form-textarea"
                     ></textarea>
 
-                    <select name="rarity">
-                        <option value="common">Comum</option>
+                    <select name="rarity" class="form-select">
+                        <option value="common">Baixa</option>
 
-                        <option value="rare">Rara</option>
+                        <option value="rare">Média</option>
 
-                        <option value="epic">Épica</option>
+                        <option value="epic">Alta</option>
 
-                        <option value="legendary">Lendária</option>
+                        <option value="legendary">Urgente</option>
                     </select>
 
-                    <br />
+                    <input type="date" name="deadline" class="form-input" />
 
-                    <input type="date" name="deadline" />
-
-                    <button type="submit">Criar Card</button>
+                    <button type="submit" class="btn btn-primary">
+                        Adicionar
+                    </button>
                 </form>
             </section>
 
-            <div class="kanban-board">
-                <!-- BACKLOG -->
+            <section class="kanban-section">
+                <h3>Tarefas</h3>
 
-                <div class="column">
-                    <h3>Backlog</h3>
+                <div class="kanban-board">
+                    <!-- BACKLOG -->
 
-                    {{range .Cards}} {{if eq .Status "backlog"}}
+                    <div class="kanban-column">
+                        <div class="column-title">A Fazer</div>
 
-                    <div
-                        class="card"
-                        style="
-border-left:
-6px solid {{.Color}}
-"
-                    >
-                        <strong> {{.Title}} </strong>
+                        <div class="tasks-container">
+                            {{range .Cards}} {{if eq .Status "backlog"}}
 
-                        {{if .Description}}
+                            <details class="task-card">
+                                <summary>
+                                    <div
+                                        class="task-priority"
+                                        data-rarity="{{.Rarity}}"
+                                    ></div>
 
-                        <p>{{.Description}}</p>
+                                    <div class="task-content">
+                                        <h4>{{.Title}}</h4>
 
-                        {{end}}
+                                        {{if .DeadlineLabel}}
 
-                        <small>
-                            ⚔️ {{.Rarity}} {{if .DeadlineLabel}}
+                                        <span class="task-deadline">
+                                            {{.DeadlineLabel}}
+                                        </span>
 
-                            <br />
+                                        {{end}}
+                                    </div>
+                                </summary>
 
-                            ⏳ {{.DeadlineLabel}} {{end}} {{if .IsLate}}
+                                <div class="task-expanded">
+                                    {{if .Description}}
 
-                            <br />
+                                    <p>{{.Description}}</p>
 
-                            ⚠️ ATRASADA {{end}}
-                        </small>
+                                    {{end}}
 
-                        <form action="/cards/move" method="POST">
-                            <input
-                                type="hidden"
-                                name="project_id"
-                                value="{{$.ID}}"
-                            />
+                                    <form action="/cards/move" method="POST">
+                                        <input
+                                            type="hidden"
+                                            name="project_id"
+                                            value="{{$.ID}}"
+                                        />
 
-                            <input
-                                type="hidden"
-                                name="card_id"
-                                value="{{.ID}}"
-                            />
+                                        <input
+                                            type="hidden"
+                                            name="card_id"
+                                            value="{{.ID}}"
+                                        />
 
-                            <button type="submit">Avançar →</button>
-                        </form>
+                                        <button class="btn">Mover →</button>
+                                    </form>
 
-                        <form action="/cards/delete" method="POST">
-                            <input
-                                type="hidden"
-                                name="project_id"
-                                value="{{$.ID}}"
-                            />
+                                    <form action="/cards/delete" method="POST">
+                                        <input
+                                            type="hidden"
+                                            name="project_id"
+                                            value="{{$.ID}}"
+                                        />
 
-                            <input
-                                type="hidden"
-                                name="card_id"
-                                value="{{.ID}}"
-                            />
+                                        <input
+                                            type="hidden"
+                                            name="card_id"
+                                            value="{{.ID}}"
+                                        />
 
-                            <button type="submit">🗑️</button>
-                        </form>
+                                        <button class="btn btn-danger">
+                                            Excluir
+                                        </button>
+                                    </form>
+                                </div>
+                            </details>
 
-                        <details>
-                            <summary>📝 Editar</summary>
-
-                            <form action="/cards/update" method="POST">
-                                <input
-                                    type="hidden"
-                                    name="project_id"
-                                    value="{{$.ID}}"
-                                />
-
-                                <input
-                                    type="hidden"
-                                    name="card_id"
-                                    value="{{.ID}}"
-                                />
-
-                                <input
-                                    type="text"
-                                    name="title"
-                                    value="{{.Title}}"
-                                    required
-                                />
-
-                                <textarea name="description">
-{{.Description}}</textarea
-                                >
-
-                                <select name="rarity">
-                                    <option value="common">Comum</option>
-
-                                    <option value="rare">Rara</option>
-
-                                    <option value="epic">Épica</option>
-
-                                    <option value="legendary">Lendária</option>
-                                </select>
-
-                                <br />
-
-                                <input
-                                    type="date"
-                                    name="deadline"
-                                    value="{{.DeadlineLabel}}"
-                                />
-
-                                <button type="submit">Salvar</button>
-                            </form>
-                        </details>
+                            {{end}} {{end}}
+                        </div>
                     </div>
 
-                    {{end}} {{end}}
-                </div>
+                    <!-- DOING -->
 
-                <!-- DOING -->
+                    <div class="kanban-column">
+                        <div class="column-title">Fazendo</div>
 
-                <div class="column">
-                    <h3>Doing</h3>
+                        <div class="tasks-container">
+                            {{range .Cards}} {{if eq .Status "doing"}}
 
-                    {{range .Cards}} {{if eq .Status "doing"}}
+                            <div class="task-card">
+                                <h4>{{.Title}}</h4>
 
-                    <div
-                        class="card"
-                        style="
-border-left:
-6px solid {{.Color}}
-"
-                    >
-                        <strong> {{.Title}} </strong>
+                                {{if .Description}}
 
-                        {{if .Description}}
+                                <p>{{.Description}}</p>
 
-                        <p>{{.Description}}</p>
+                                {{end}}
 
-                        {{end}}
+                                <form action="/cards/move" method="POST">
+                                    <input
+                                        type="hidden"
+                                        name="project_id"
+                                        value="{{$.ID}}"
+                                    />
 
-                        <small>
-                            ⚔️ {{.Rarity}} — +{{.XP}} XP {{if .DeadlineLabel}}
+                                    <input
+                                        type="hidden"
+                                        name="card_id"
+                                        value="{{.ID}}"
+                                    />
 
-                            <br />
+                                    <button class="btn">Concluir ✓</button>
+                                </form>
+                            </div>
 
-                            ⏳ {{.DeadlineLabel}} {{end}} {{if .IsLate}}
-
-                            <br />
-
-                            ⚠️ ATRASADA {{end}}
-                        </small>
-
-                        <form action="/cards/move" method="POST">
-                            <input
-                                type="hidden"
-                                name="project_id"
-                                value="{{$.ID}}"
-                            />
-
-                            <input
-                                type="hidden"
-                                name="card_id"
-                                value="{{.ID}}"
-                            />
-
-                            <button
-                                type="submit"
-                                onclick="
-                                    return confirm('Concluir esta quest?');
-                                "
-                            >
-                                Concluir ✅
-                            </button>
-                        </form>
-
-                        <form action="/cards/delete" method="POST">
-                            <input
-                                type="hidden"
-                                name="project_id"
-                                value="{{$.ID}}"
-                            />
-
-                            <input
-                                type="hidden"
-                                name="card_id"
-                                value="{{.ID}}"
-                            />
-
-                            <button type="submit">🗑️</button>
-                        </form>
+                            {{end}} {{end}}
+                        </div>
                     </div>
 
-                    {{end}} {{end}}
-                </div>
+                    <!-- DONE -->
 
-                <!-- DONE -->
+                    <div class="kanban-column">
+                        <div class="column-title">Concluído</div>
 
-                <div class="column">
-                    <h3>Done</h3>
+                        <div class="tasks-container">
+                            {{range .Cards}} {{if eq .Status "done"}}
 
-                    {{range .Cards}} {{if eq .Status "done"}}
+                            <div class="task-card">
+                                <h4>{{.Title}}</h4>
 
-                    <div
-                        class="card"
-                        style="
-border-left:
-6px solid {{.Color}}
-"
-                    >
-                        <strong> {{.Title}} </strong>
+                                {{if .Description}}
 
-                        {{if .Description}}
+                                <p>{{.Description}}</p>
 
-                        <p>{{.Description}}</p>
+                                {{end}}
+                            </div>
 
-                        {{end}}
-
-                        <small>
-                            ⚔️ {{.Rarity}} {{if .Deadline}}
-
-                            <br />
-
-                            ✅ {{.DeadlineLabel}} {{end}}
-                        </small>
-
-                        <form action="/cards/delete" method="POST">
-                            <input
-                                type="hidden"
-                                name="project_id"
-                                value="{{$.ID}}"
-                            />
-
-                            <input
-                                type="hidden"
-                                name="card_id"
-                                value="{{.ID}}"
-                            />
-
-                            <button type="submit">🗑️</button>
-                        </form>
+                            {{end}} {{end}}
+                        </div>
                     </div>
-
-                    {{end}} {{end}}
                 </div>
-            </div>
+            </section>
         </main>
     </body>
 </html>
