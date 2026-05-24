@@ -81,9 +81,21 @@
         "Status": "done",
         "Rarity": "rare",
         "Deadline": "2026-05-24"
+      },
+      {
+        "ID": "1779660356329210594",
+        "Title": "pokemon",
+        "Description": "a",
+        "Status": "backlog",
+        "Rarity": "common",
+        "Deadline": "2026-05-25"
       }
     ],
     "Activities": [
+      {
+        "Message": "⭐ Quest criada: pokemon",
+        "Time": "24/05 19:05"
+      },
       {
         "Message": "🗑️ Quest removida: inventário",
         "Time": "23/05 13:11"

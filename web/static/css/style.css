@@ -360,3 +360,17 @@ button:last-child {
 .activity-message {
     margin: 0;
 }
+
+.task-card {
+    cursor: grab;
+}
+
+.task-card.dragging {
+    opacity: 0.5;
+
+    transform: rotate(2deg);
+}
+
+.tasks-container {
+    min-height: 120px;
+}
