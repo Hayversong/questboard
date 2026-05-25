@@ -70,6 +70,11 @@ func main() {
 		handler.RenameProjectHandler,
 	)
 
+	http.HandleFunc(
+		"/cards/status",
+		handler.UpdateCardStatusHandler,
+	)
+
 	log.Println(
 		"Servidor rodando em http://localhost:8080",
 	)
