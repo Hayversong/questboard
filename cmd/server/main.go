@@ -54,6 +54,11 @@ func main() {
 		handler.UpdateCardHandler,
 	)
 
+	http.HandleFunc(
+		"/cards/reorder",
+		handler.ReorderCardsHandler,
+	)
+
 	// Projetos
 	http.HandleFunc(
 		"/projects",

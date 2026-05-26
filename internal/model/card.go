@@ -12,6 +12,8 @@ type Card struct {
 	Status      string
 	Rarity      string
 	Deadline    string
+
+	Order int
 }
 
 func (c Card) IsLate() bool {

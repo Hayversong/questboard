@@ -27,7 +27,7 @@
             </div>
         </div>
 
-        <main class="container">
+        <main class="container" data-project-id="{{.ID}}">
             <input type="hidden" id="project-id" value="{{.ID}}" />
             <section class="stats-grid">
                 <div class="stat-box">
@@ -154,7 +154,11 @@
                         <div class="tasks-container" data-status="backlog">
                             {{range .Cards}} {{if eq .Status "backlog"}}
 
-                            <details class="task-card" data-id="{{.ID}}">
+                            <details
+                                class="task-card"
+                                draggable="true"
+                                data-id="{{.ID}}"
+                            >
                                 <summary>
                                     <div
                                         class="task-priority"
@@ -193,8 +197,6 @@
                                             name="card_id"
                                             value="{{.ID}}"
                                         />
-
-                                        <button class="btn">Mover →</button>
                                     </form>
 
                                     <form action="/cards/delete" method="POST">
@@ -229,7 +231,11 @@
                         <div class="tasks-container" data-status="doing">
                             {{range .Cards}} {{if eq .Status "doing"}}
 
-                            <div class="task-card" data-id="{{.ID}}">
+                            <div
+                                class="task-card"
+                                draggable="true"
+                                data-id="{{.ID}}"
+                            >
                                 <h4>{{.Title}}</h4>
 
                                 {{if .Description}}
@@ -237,22 +243,6 @@
                                 <p>{{.Description}}</p>
 
                                 {{end}}
-
-                                <form action="/cards/move" method="POST">
-                                    <input
-                                        type="hidden"
-                                        name="project_id"
-                                        value="{{$.ID}}"
-                                    />
-
-                                    <input
-                                        type="hidden"
-                                        name="card_id"
-                                        value="{{.ID}}"
-                                    />
-
-                                    <button class="btn">Concluir ✓</button>
-                                </form>
                             </div>
 
                             {{end}} {{end}}
@@ -267,7 +257,11 @@
                         <div class="tasks-container" data-status="done">
                             {{range .Cards}} {{if eq .Status "done"}}
 
-                            <div class="task-card" data-id="{{.ID}}">
+                            <div
+                                class="task-card"
+                                draggable="true"
+                                data-id="{{.ID}}"
+                            >
                                 <h4>{{.Title}}</h4>
 
                                 {{if .Description}}

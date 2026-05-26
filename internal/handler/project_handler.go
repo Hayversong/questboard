@@ -3,6 +3,7 @@ package handler
 import (
 	"html/template"
 	"net/http"
+	"sort"
 
 	"github.com/Hayversong/questboard/internal/model"
 	"github.com/Hayversong/questboard/internal/service"
@@ -99,6 +100,15 @@ func ProjectDetailHandler(
 	for _, project := range projects {
 
 		if project.ID == id {
+
+			sort.Slice(
+				project.Cards,
+				func(i, j int) bool {
+
+					return project.Cards[i].Order <
+						project.Cards[j].Order
+				},
+			)
 
 			tmpl, err := template.ParseFiles(
 				"web/templates/project.html",

@@ -44,6 +44,8 @@ func CreateCard(
 			Rarity: rarity,
 
 			Deadline: deadline,
+
+			Order: len(projects[i].Cards),
 		}
 
 		projects[i].Cards =

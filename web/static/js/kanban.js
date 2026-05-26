@@ -1,117 +1,113 @@
-document.addEventListener(
-    "DOMContentLoaded",
+const containers = document.querySelectorAll(".tasks-container");
 
-    () => {
-        const cards = document.querySelectorAll(".task-card");
+let dragged = null;
 
-        const columns = document.querySelectorAll(".tasks-container");
+document.querySelectorAll(".task-card").forEach((card) => {
+    card.draggable = true;
 
-        let dragged = null;
+    card.addEventListener("dragstart", (e) => {
+        dragged = card;
 
-        cards.forEach((card) => {
-            card.setAttribute("draggable", "true");
+        e.dataTransfer.effectAllowed = "move";
 
-            card.addEventListener(
-                "dragstart",
+        card.classList.add("dragging");
+    });
 
-                (e) => {
-                    dragged = card;
+    card.addEventListener("dragend", async (e) => {
+        console.log("DRAG END");
 
-                    setTimeout(
-                        () => {
-                            card.classList.add("dragging");
-                        },
+        card.classList.remove("dragging");
 
-                        0,
-                    );
-                },
-            );
+        await saveOrder();
 
-            card.addEventListener(
-                "dragend",
+        dragged = null;
+    });
+});
 
-                () => {
-                    card.classList.remove("dragging");
+containers.forEach((container) => {
+    container.addEventListener("dragover", (e) => {
+        e.preventDefault();
 
-                    columns.forEach((col) => {
-                        col.classList.remove("drag-hover");
-                    });
-                },
-            );
+        const after = getCardAfterCursor(container, e.clientY);
+
+        if (!dragged) return;
+
+        if (!after) {
+            container.appendChild(dragged);
+        } else {
+            container.insertBefore(dragged, after);
+        }
+    });
+});
+
+function getCardAfterCursor(container, y) {
+    const cards = [...container.querySelectorAll(".task-card:not(.dragging)")];
+
+    return cards.reduce(
+        (closest, card) => {
+            const box = card.getBoundingClientRect();
+
+            const offset = y - box.top - box.height / 2;
+
+            if (offset < 0 && offset > closest.offset) {
+                return {
+                    offset,
+                    element: card,
+                };
+            }
+
+            return closest;
+        },
+        {
+            offset: Number.NEGATIVE_INFINITY,
+        },
+    ).element;
+}
+
+async function saveOrder() {
+    console.log("SALVANDO ORDEM");
+
+    const projectId = document.querySelector(".container").dataset.projectId;
+
+    const order = [];
+
+    document.querySelectorAll(".tasks-container").forEach((column) => {
+        column.querySelectorAll(".task-card").forEach((card, index) => {
+            order.push({
+                id: card.dataset.id,
+
+                order: index,
+            });
         });
+    });
 
-        columns.forEach((column) => {
-            column.addEventListener(
-                "dragover",
+    console.log(
+        JSON.stringify(
+            {
+                project_id: projectId,
 
-                (e) => {
-                    e.preventDefault();
+                cards: order,
+            },
+            null,
+            2,
+        ),
+    );
 
-                    column.classList.add("drag-hover");
-                },
-            );
+    try {
+        await fetch("/cards/reorder", {
+            method: "POST",
 
-            column.addEventListener(
-                "dragleave",
+            headers: {
+                "Content-Type": "application/json",
+            },
 
-                () => {
-                    column.classList.remove("drag-hover");
-                },
-            );
+            body: JSON.stringify({
+                project_id: projectId,
 
-            column.addEventListener(
-                "drop",
-
-                async (e) => {
-                    e.preventDefault();
-
-                    if (!dragged) return;
-
-                    column.classList.remove("drag-hover");
-
-                    column.appendChild(dragged);
-
-                    dragged.classList.add("drop-success");
-
-                    setTimeout(
-                        () => {
-                            dragged.classList.remove("drop-success");
-                        },
-
-                        350,
-                    );
-
-                    const body = new URLSearchParams();
-
-                    body.append(
-                        "project_id",
-
-                        document.getElementById("project-id").value,
-                    );
-
-                    body.append(
-                        "card_id",
-
-                        dragged.dataset.id,
-                    );
-
-                    body.append(
-                        "status",
-
-                        column.dataset.status,
-                    );
-
-                    await fetch(
-                        "/cards/status",
-
-                        {
-                            method: "POST",
-
-                            body,
-                        },
-                    );
-                },
-            );
+                cards: order,
+            }),
         });
-    },
-);
+    } catch (err) {
+        console.error(err);
+    }
+}
