@@ -6,18 +6,24 @@ document.addEventListener(
 
         const columns = document.querySelectorAll(".tasks-container");
 
-        let dragged;
+        let dragged = null;
 
         cards.forEach((card) => {
-            card.draggable = true;
+            card.setAttribute("draggable", "true");
 
             card.addEventListener(
                 "dragstart",
 
-                () => {
+                (e) => {
                     dragged = card;
 
-                    card.classList.add("dragging");
+                    setTimeout(
+                        () => {
+                            card.classList.add("dragging");
+                        },
+
+                        0,
+                    );
                 },
             );
 
@@ -26,6 +32,10 @@ document.addEventListener(
 
                 () => {
                     card.classList.remove("dragging");
+
+                    columns.forEach((col) => {
+                        col.classList.remove("drag-hover");
+                    });
                 },
             );
         });
@@ -36,14 +46,40 @@ document.addEventListener(
 
                 (e) => {
                     e.preventDefault();
+
+                    column.classList.add("drag-hover");
+                },
+            );
+
+            column.addEventListener(
+                "dragleave",
+
+                () => {
+                    column.classList.remove("drag-hover");
                 },
             );
 
             column.addEventListener(
                 "drop",
 
-                async () => {
+                async (e) => {
+                    e.preventDefault();
+
+                    if (!dragged) return;
+
+                    column.classList.remove("drag-hover");
+
                     column.appendChild(dragged);
+
+                    dragged.classList.add("drop-success");
+
+                    setTimeout(
+                        () => {
+                            dragged.classList.remove("drop-success");
+                        },
+
+                        350,
+                    );
 
                     const body = new URLSearchParams();
 

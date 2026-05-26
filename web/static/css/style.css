@@ -294,6 +294,8 @@ button:last-child {
 }
 
 .task-card {
+    cursor: grab;
+    transition: 0.25s;
     overflow: hidden;
 }
 
@@ -361,16 +363,52 @@ button:last-child {
     margin: 0;
 }
 
+/* ======================
+KANBAN DRAG
+====================== */
+
+.tasks-container {
+    min-height: 160px;
+
+    transition: 0.2s;
+}
+
+.tasks-container.drag-hover {
+    background: rgba(124, 92, 255, 0.08);
+
+    border: 2px dashed var(--primary);
+
+    border-radius: 18px;
+}
+
 .task-card {
     cursor: grab;
+
+    transition:
+        transform 0.25s,
+        opacity 0.25s;
 }
 
 .task-card.dragging {
-    opacity: 0.5;
+    opacity: 0.45;
 
-    transform: rotate(2deg);
+    transform: scale(0.98);
 }
 
-.tasks-container {
-    min-height: 120px;
+.task-card.drop-success {
+    animation: taskDrop 0.35s ease;
+}
+
+@keyframes taskDrop {
+    0% {
+        transform: scale(0.96);
+    }
+
+    50% {
+        transform: scale(1.03);
+    }
+
+    100% {
+        transform: scale(1);
+    }
 }
