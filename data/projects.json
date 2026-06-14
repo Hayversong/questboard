@@ -28,7 +28,7 @@
         "Status": "done",
         "Rarity": "",
         "Deadline": "",
-        "Order": 0
+        "Order": 1
       },
       {
         "ID": "1779394402087948693",
@@ -37,7 +37,7 @@
         "Status": "done",
         "Rarity": "legendary",
         "Deadline": "",
-        "Order": 0
+        "Order": 2
       },
       {
         "ID": "1779394596473276401",
@@ -46,7 +46,7 @@
         "Status": "done",
         "Rarity": "epic",
         "Deadline": "",
-        "Order": 0
+        "Order": 3
       },
       {
         "ID": "1779395696972384869",
@@ -55,7 +55,7 @@
         "Status": "done",
         "Rarity": "rare",
         "Deadline": "",
-        "Order": 0
+        "Order": 4
       },
       {
         "ID": "1779479270895937075",
@@ -64,7 +64,7 @@
         "Status": "done",
         "Rarity": "common",
         "Deadline": "2026-05-06",
-        "Order": 0
+        "Order": 5
       }
     ],
     "Activities": null
@@ -98,7 +98,7 @@
         "Status": "done",
         "Rarity": "common",
         "Deadline": "2026-05-25",
-        "Order": 0
+        "Order": 1
       },
       {
         "ID": "1779751640510465949",
@@ -107,7 +107,7 @@
         "Status": "done",
         "Rarity": "rare",
         "Deadline": "2026-05-26",
-        "Order": 0
+        "Order": 3
       },
       {
         "ID": "1779751653908333553",
@@ -116,7 +116,7 @@
         "Status": "done",
         "Rarity": "common",
         "Deadline": "2026-05-29",
-        "Order": 0
+        "Order": 4
       },
       {
         "ID": "1779817767657510073",
@@ -125,7 +125,7 @@
         "Status": "doing",
         "Rarity": "common",
         "Deadline": "2026-05-30",
-        "Order": 0
+        "Order": 2
       },
       {
         "ID": "1779818809506699137",
@@ -134,7 +134,7 @@
         "Status": "doing",
         "Rarity": "common",
         "Deadline": "2026-06-06",
-        "Order": 6
+        "Order": 1
       }
     ],
     "Activities": [

@@ -1,20 +1,24 @@
 package service
 
 import (
-	"errors"
-
 	"github.com/Hayversong/questboard/internal/storage"
 )
 
-func UpdateCardStatus(
-	projectID string,
-	cardID string,
-	status string,
-) error {
+func UpdateCardStatus(projectID string, cardID string, status string) error {
 
-	projects, err :=
-		storage.LoadProjects()
+	if projectID == "" {
+		return ErrProjectIDRequired
+	}
 
+	if cardID == "" {
+		return ErrCardIDRequired
+	}
+
+	if !isValidStatus(status) {
+		return ErrInvalidStatus
+	}
+
+	projects, err := storage.LoadProjects()
 	if err != nil {
 		return err
 	}
@@ -27,23 +31,19 @@ func UpdateCardStatus(
 
 		for c := range projects[p].Cards {
 
-			card :=
-				&projects[p].Cards[c]
+			card := &projects[p].Cards[c]
 
 			if card.ID != cardID {
 				continue
 			}
 
-			card.Status =
-				status
+			card.Status = status
 
-			return storage.SaveProjects(
-				projects,
-			)
+			return storage.SaveProjects(projects)
 		}
+
+		return ErrCardNotFound
 	}
 
-	return errors.New(
-		"card não encontrado",
-	)
+	return ErrProjectNotFound
 }

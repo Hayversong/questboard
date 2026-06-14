@@ -1,20 +1,21 @@
 package service
 
 import (
-	"errors"
-
 	"github.com/Hayversong/questboard/internal/model"
 	"github.com/Hayversong/questboard/internal/storage"
 )
 
-func DeleteCard(
-	projectID string,
-	cardID string,
-) error {
+func DeleteCard(projectID string, cardID string) error {
 
-	projects, err :=
-		storage.LoadProjects()
+	if projectID == "" {
+		return ErrProjectIDRequired
+	}
 
+	if cardID == "" {
+		return ErrCardIDRequired
+	}
+
+	projects, err := storage.LoadProjects()
 	if err != nil {
 		return err
 	}
@@ -26,47 +27,27 @@ func DeleteCard(
 		}
 
 		var updatedCards []model.Card
-
 		cardDeleted := false
 
 		for _, card := range projects[p].Cards {
 
 			if card.ID == cardID {
-
-				AddActivity(
-					&projects[p],
-					"🗑️ Quest removida: "+
-						card.Title,
-				)
-
+				AddActivity(&projects[p], "🗑️ Quest removida: "+card.Title)
 				cardDeleted = true
-
 				continue
 			}
 
-			updatedCards =
-				append(
-					updatedCards,
-					card,
-				)
+			updatedCards = append(updatedCards, card)
 		}
 
 		if !cardDeleted {
-
-			return errors.New(
-				"card não encontrado",
-			)
+			return ErrCardNotFound
 		}
 
-		projects[p].Cards =
-			updatedCards
+		projects[p].Cards = updatedCards
 
-		return storage.SaveProjects(
-			projects,
-		)
+		return storage.SaveProjects(projects)
 	}
 
-	return errors.New(
-		"projeto não encontrado",
-	)
+	return ErrProjectNotFound
 }

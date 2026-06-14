@@ -8,61 +8,30 @@ import (
 )
 
 type ReorderRequest struct {
-	ProjectID string `json:"project_id"`
-
-	Cards []service.CardOrder `json:"cards"`
+	ProjectID string              `json:"project_id"`
+	Cards     []service.CardOrder `json:"cards"`
 }
 
-func ReorderCardsHandler(
-	w http.ResponseWriter,
-	r *http.Request,
-) {
+func ReorderCardsHandler(w http.ResponseWriter, r *http.Request) {
 
-	if r.Method != "POST" {
-
-		http.Error(
-			w,
-			"Método inválido",
-			http.StatusMethodNotAllowed,
-		)
-
+	if r.Method != http.MethodPost {
+		http.Error(w, "Método inválido", http.StatusMethodNotAllowed)
 		return
 	}
 
 	var req ReorderRequest
 
-	err := json.NewDecoder(
-		r.Body,
-	).Decode(&req)
-
+	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
-
-		http.Error(
-			w,
-			"JSON inválido",
-			http.StatusBadRequest,
-		)
-
+		http.Error(w, "JSON inválido", http.StatusBadRequest)
 		return
 	}
 
-	err = service.ReorderCards(
-		req.ProjectID,
-		req.Cards,
-	)
-
+	err = service.ReorderCards(req.ProjectID, req.Cards)
 	if err != nil {
-
-		http.Error(
-			w,
-			err.Error(),
-			http.StatusInternalServerError,
-		)
-
+		writeServiceError(w, err)
 		return
 	}
 
-	w.WriteHeader(
-		http.StatusOK,
-	)
+	w.WriteHeader(http.StatusOK)
 }

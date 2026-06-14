@@ -5,18 +5,30 @@ import (
 )
 
 type CardOrder struct {
-	ID string
-
-	Order int
+	ID    string `json:"id"`
+	Order int    `json:"order"`
 }
 
-func ReorderCards(
-	projectID string,
-	cards []CardOrder,
-) error {
+func ReorderCards(projectID string, cards []CardOrder) error {
+
+	if projectID == "" {
+		return ErrProjectIDRequired
+	}
+
+	if len(cards) == 0 {
+		return ErrCardsListRequired
+	}
+
+	for _, item := range cards {
+		if item.ID == "" {
+			return ErrCardIDRequired
+		}
+		if item.Order < 0 {
+			return ErrInvalidOrder
+		}
+	}
 
 	projects, err := storage.LoadProjects()
-
 	if err != nil {
 		return err
 	}
@@ -32,17 +44,13 @@ func ReorderCards(
 			for c := range projects[p].Cards {
 
 				if projects[p].Cards[c].ID == item.ID {
-
-					projects[p].Cards[c].Order =
-						item.Order
+					projects[p].Cards[c].Order = item.Order
 				}
 			}
 		}
 
-		return storage.SaveProjects(
-			projects,
-		)
+		return storage.SaveProjects(projects)
 	}
 
-	return nil
+	return ErrProjectNotFound
 }

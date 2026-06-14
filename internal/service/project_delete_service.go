@@ -5,29 +5,31 @@ import (
 	"github.com/Hayversong/questboard/internal/storage"
 )
 
-func DeleteProject(
-	projectID string,
-) error {
+func DeleteProject(projectID string) error {
+
+	if projectID == "" {
+		return ErrProjectIDRequired
+	}
 
 	projects, err := storage.LoadProjects()
-
 	if err != nil {
 		return err
 	}
 
-	var updated []model.Project
+	updated := []model.Project{}
+	found := false
 
 	for _, p := range projects {
-
-		if p.ID != projectID {
-			updated = append(
-				updated,
-				p,
-			)
+		if p.ID == projectID {
+			found = true
+			continue
 		}
+		updated = append(updated, p)
 	}
 
-	return storage.SaveProjects(
-		updated,
-	)
+	if !found {
+		return ErrProjectNotFound
+	}
+
+	return storage.SaveProjects(updated)
 }

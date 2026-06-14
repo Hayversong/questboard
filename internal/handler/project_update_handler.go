@@ -6,50 +6,21 @@ import (
 	"github.com/Hayversong/questboard/internal/service"
 )
 
-func RenameProjectHandler(
-	w http.ResponseWriter,
-	r *http.Request,
-) {
+func RenameProjectHandler(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method != http.MethodPost {
-
-		http.Error(
-			w,
-			"Método inválido",
-			http.StatusMethodNotAllowed,
-		)
-
+		http.Error(w, "Método inválido", http.StatusMethodNotAllowed)
 		return
 	}
 
-	projectID := r.FormValue(
-		"project_id",
-	)
+	projectID := r.FormValue("project_id")
+	name := r.FormValue("name")
 
-	name := r.FormValue(
-		"name",
-	)
-
-	err := service.RenameProject(
-		projectID,
-		name,
-	)
-
+	err := service.RenameProject(projectID, name)
 	if err != nil {
-
-		http.Error(
-			w,
-			err.Error(),
-			http.StatusInternalServerError,
-		)
-
+		writeServiceError(w, err)
 		return
 	}
 
-	http.Redirect(
-		w,
-		r,
-		"/",
-		http.StatusSeeOther,
-	)
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }

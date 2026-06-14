@@ -1,7 +1,7 @@
 package service
 
 import (
-	"errors"
+	"strings"
 
 	"github.com/Hayversong/questboard/internal/storage"
 )
@@ -15,8 +15,34 @@ func UpdateCard(
 	deadline string,
 ) error {
 
-	projects, err := storage.LoadProjects()
+	if projectID == "" {
+		return ErrProjectIDRequired
+	}
 
+	if cardID == "" {
+		return ErrCardIDRequired
+	}
+
+	title = strings.TrimSpace(title)
+	description = strings.TrimSpace(description)
+
+	if title == "" {
+		return ErrCardTitleRequired
+	}
+
+	if rarity == "" {
+		rarity = "common"
+	}
+
+	if !isValidRarity(rarity) {
+		return ErrInvalidRarity
+	}
+
+	if !isValidDeadline(deadline) {
+		return ErrInvalidDeadline
+	}
+
+	projects, err := storage.LoadProjects()
 	if err != nil {
 		return err
 	}
@@ -40,13 +66,11 @@ func UpdateCard(
 			card.Rarity = rarity
 			card.Deadline = deadline
 
-			return storage.SaveProjects(
-				projects,
-			)
+			return storage.SaveProjects(projects)
 		}
+
+		return ErrCardNotFound
 	}
 
-	return errors.New(
-		"card não encontrado",
-	)
+	return ErrProjectNotFound
 }

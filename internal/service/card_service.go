@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/Hayversong/questboard/internal/model"
@@ -16,9 +17,30 @@ func CreateCard(
 	deadline string,
 ) error {
 
-	projects, err :=
-		storage.LoadProjects()
+	if projectID == "" {
+		return ErrProjectIDRequired
+	}
 
+	title = strings.TrimSpace(title)
+	description = strings.TrimSpace(description)
+
+	if title == "" {
+		return ErrCardTitleRequired
+	}
+
+	if rarity == "" {
+		rarity = "common"
+	}
+
+	if !isValidRarity(rarity) {
+		return ErrInvalidRarity
+	}
+
+	if !isValidDeadline(deadline) {
+		return ErrInvalidDeadline
+	}
+
+	projects, err := storage.LoadProjects()
 	if err != nil {
 		return err
 	}
@@ -34,47 +56,35 @@ func CreateCard(
 				"%d",
 				time.Now().UnixNano(),
 			),
-
-			Title: title,
-
+			Title:       title,
 			Description: description,
-
-			Status: "backlog",
-
-			Rarity: rarity,
-
-			Deadline: deadline,
-
-			Order: len(projects[i].Cards),
+			Status:      "backlog",
+			Rarity:      rarity,
+			Deadline:    deadline,
+			Order:       len(projects[i].Cards),
 		}
 
-		projects[i].Cards =
-			append(
-				projects[i].Cards,
-				card,
-			)
+		projects[i].Cards = append(projects[i].Cards, card)
 
-		AddActivity(
-			&projects[i],
-			"⭐ Quest criada: "+title,
-		)
+		AddActivity(&projects[i], "⭐ Quest criada: "+title)
 
-		return storage.SaveProjects(
-			projects,
-		)
+		return storage.SaveProjects(projects)
 	}
 
-	return nil
+	return ErrProjectNotFound
 }
 
-func MoveCard(
-	projectID string,
-	cardID string,
-) error {
+func MoveCard(projectID string, cardID string) error {
 
-	projects, err :=
-		storage.LoadProjects()
+	if projectID == "" {
+		return ErrProjectIDRequired
+	}
 
+	if cardID == "" {
+		return ErrCardIDRequired
+	}
+
+	projects, err := storage.LoadProjects()
 	if err != nil {
 		return err
 	}
@@ -87,8 +97,7 @@ func MoveCard(
 
 		for c := range projects[p].Cards {
 
-			card :=
-				&projects[p].Cards[c]
+			card := &projects[p].Cards[c]
 
 			if card.ID != cardID {
 				continue
@@ -97,37 +106,22 @@ func MoveCard(
 			switch card.Status {
 
 			case "backlog":
-
-				card.Status =
-					"doing"
-
-				AddActivity(
-					&projects[p],
-					"🚀 Quest iniciada: "+
-						card.Title,
-				)
+				card.Status = "doing"
+				AddActivity(&projects[p], "🚀 Quest iniciada: "+card.Title)
 
 			case "doing":
-
-				card.Status =
-					"done"
-
-				AddActivity(
-					&projects[p],
-					"✅ Quest concluída: "+
-						card.Title,
-				)
+				card.Status = "done"
+				AddActivity(&projects[p], "✅ Quest concluída: "+card.Title)
 
 			default:
-
 				return nil
 			}
 
-			return storage.SaveProjects(
-				projects,
-			)
+			return storage.SaveProjects(projects)
 		}
+
+		return ErrCardNotFound
 	}
 
-	return nil
+	return ErrProjectNotFound
 }

@@ -7,72 +7,25 @@ import (
 	"github.com/Hayversong/questboard/internal/service"
 )
 
-func UpdateCardHandler(
-	w http.ResponseWriter,
-	r *http.Request,
-) {
+func UpdateCardHandler(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method != http.MethodPost {
-
-		http.Error(
-			w,
-			"Método inválido",
-			http.StatusMethodNotAllowed,
-		)
-
+		http.Error(w, "Método inválido", http.StatusMethodNotAllowed)
 		return
 	}
 
-	projectID := r.FormValue(
-		"project_id",
-	)
+	projectID := r.FormValue("project_id")
+	cardID := r.FormValue("card_id")
+	title := r.FormValue("title")
+	description := r.FormValue("description")
+	rarity := r.FormValue("rarity")
+	deadline := r.FormValue("deadline")
 
-	cardID := r.FormValue(
-		"card_id",
-	)
-
-	title := r.FormValue(
-		"title",
-	)
-
-	description := r.FormValue(
-		"description",
-	)
-
-	rarity := r.FormValue(
-		"rarity",
-	)
-	deadline := r.FormValue(
-		"deadline",
-)
-
-	err := service.UpdateCard(
-		projectID,
-		cardID,
-		title,
-		description,
-		rarity,
-		deadline,
-	)
-
+	err := service.UpdateCard(projectID, cardID, title, description, rarity, deadline)
 	if err != nil {
-
-		http.Error(
-			w,
-			err.Error(),
-			http.StatusInternalServerError,
-		)
-
+		writeServiceError(w, err)
 		return
 	}
 
-	http.Redirect(
-		w,
-		r,
-		fmt.Sprintf(
-			"/project?id=%s",
-			projectID,
-		),
-		http.StatusSeeOther,
-	)
+	http.Redirect(w, r, fmt.Sprintf("/project?id=%s", projectID), http.StatusSeeOther)
 }

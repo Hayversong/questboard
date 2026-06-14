@@ -1,18 +1,24 @@
 package service
 
 import (
-	"errors"
+	"strings"
 
 	"github.com/Hayversong/questboard/internal/storage"
 )
 
-func RenameProject(
-	projectID string,
-	name string,
-) error {
+func RenameProject(projectID string, name string) error {
+
+	if projectID == "" {
+		return ErrProjectIDRequired
+	}
+
+	name = strings.TrimSpace(name)
+
+	if name == "" {
+		return ErrProjectNameRequired
+	}
 
 	projects, err := storage.LoadProjects()
-
 	if err != nil {
 		return err
 	}
@@ -23,13 +29,9 @@ func RenameProject(
 
 			projects[i].Name = name
 
-			return storage.SaveProjects(
-				projects,
-			)
+			return storage.SaveProjects(projects)
 		}
 	}
 
-	return errors.New(
-		"projeto não encontrado",
-	)
+	return ErrProjectNotFound
 }
