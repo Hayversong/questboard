@@ -30,7 +30,7 @@ func DataFilePath() string {
 	return filepath.Join(dir, defaultDataFile)
 }
 
-func SaveProjects(
+func SaveProjectsJSON(
 	projects []model.Project,
 ) error {
 
@@ -87,7 +87,7 @@ func SaveProjects(
 	return nil
 }
 
-func LoadProjects() ([]model.Project, error) {
+func LoadProjectsJSON() ([]model.Project, error) {
 
 	data, err := os.ReadFile(
 		DataFilePath(),

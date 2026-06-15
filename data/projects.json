@@ -28,7 +28,7 @@
         "Status": "done",
         "Rarity": "common",
         "Deadline": "2026-05-25",
-        "Order": 2
+        "Order": 3
       },
       {
         "ID": "1779751640510465949",
@@ -37,7 +37,7 @@
         "Status": "done",
         "Rarity": "rare",
         "Deadline": "2026-05-26",
-        "Order": 3
+        "Order": 4
       },
       {
         "ID": "1779751653908333553",
@@ -46,16 +46,16 @@
         "Status": "done",
         "Rarity": "common",
         "Deadline": "2026-05-29",
-        "Order": 4
+        "Order": 5
       },
       {
         "ID": "1779817767657510073",
         "Title": "teste",
         "Description": "aaaaaaaaaaaa",
-        "Status": "doing",
+        "Status": "done",
         "Rarity": "common",
         "Deadline": "2026-05-30",
-        "Order": 1
+        "Order": 2
       },
       {
         "ID": "1779818809506699137",
