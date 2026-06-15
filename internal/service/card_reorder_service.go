@@ -44,13 +44,20 @@ func ReorderCards(projectID string, cards []CardOrder) error {
 		}
 
 		for _, item := range cards {
+			found := false
+
 			for c := range projects[p].Cards {
 				if projects[p].Cards[c].ID == item.ID {
+					found = true
 					projects[p].Cards[c].Order = item.Order
 					if item.Status != "" {
 						projects[p].Cards[c].Status = item.Status
 					}
 				}
+			}
+
+			if !found {
+				return ErrCardNotFound
 			}
 		}
 

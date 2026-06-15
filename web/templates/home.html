@@ -1,31 +1,42 @@
 <!doctype html>
-
 <html lang="pt-br">
     <head>
         <meta charset="UTF-8" />
-
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>QuestBoard</title>
-
         <link rel="stylesheet" href="/static/css/style.css" />
     </head>
 
     <body>
-        <header>
-            <h1>🎮 QuestBoard</h1>
+        <main class="page-shell">
+            <header class="page-header">
+                <div>
+                    <h1>QuestBoard</h1>
+                    <p>Organize projetos de jogos em quests, progresso e XP.</p>
+                </div>
 
-            <p>Projetos: {{.Stats.Projects}}</p>
+                <section class="dashboard-stats" aria-label="Resumo do quadro">
+                    <div class="dashboard-stat">
+                        <strong>{{.Stats.Projects}}</strong>
+                        <span>Projetos</span>
+                    </div>
+                    <div class="dashboard-stat">
+                        <strong>{{.Stats.Cards}}</strong>
+                        <span>Quests</span>
+                    </div>
+                    <div class="dashboard-stat">
+                        <strong>{{.Stats.Done}}</strong>
+                        <span>Concluidas</span>
+                    </div>
+                    <div class="dashboard-stat">
+                        <strong>{{.Stats.XP}}</strong>
+                        <span>XP total</span>
+                    </div>
+                </section>
+            </header>
 
-            <p>Quests: {{.Stats.Cards}}</p>
-
-            <p>Concluídas: {{.Stats.Done}}</p>
-
-            <p>⭐ XP Total: {{.Stats.XP}}</p>
-        </header>
-
-        <main>
-            <section class="add-card">
-                <h2>Novo Projeto</h2>
-
+            <section class="panel">
+                <h2 class="section-title">Novo projeto</h2>
                 <form action="/projects" method="POST">
                     <input
                         type="text"
@@ -33,43 +44,62 @@
                         placeholder="Nome do projeto"
                         required
                     />
-
-                    <button type="submit">Criar Projeto</button>
+                    <button type="submit">Criar projeto</button>
                 </form>
             </section>
 
-            <section>
-                <h2>Projetos</h2>
+            <section class="panel">
+                <h2 class="section-title">Projetos</h2>
 
-                {{range .Projects}}
+                <div class="project-grid">
+                    {{range .Projects}}
+                    <article class="project-card">
+                        <div>
+                            <h3>
+                                <a href="/project?id={{.ID}}">{{.Name}}</a>
+                            </h3>
+                            <div class="project-meta">
+                                <span class="badge badge-common">{{len .Cards}} quests</span>
+                                <span class="badge badge-status-done">{{.Progress}}%</span>
+                                <span class="badge badge-rare">{{.XP}} XP</span>
+                            </div>
+                            <progress value="{{.Progress}}" max="100"></progress>
+                        </div>
 
-                <div class="card">
-                    <h3>
-                        <a href="/project?id={{.ID}}"> {{.Name}} </a>
-                    </h3>
+                        <div class="project-actions">
+                            <form action="/projects/rename" method="POST">
+                                <input
+                                    type="hidden"
+                                    name="project_id"
+                                    value="{{.ID}}"
+                                />
+                                <input
+                                    type="text"
+                                    name="name"
+                                    value="{{.Name}}"
+                                    required
+                                />
+                                <button type="submit" class="btn-sm btn-save">
+                                    Renomear
+                                </button>
+                            </form>
 
-                    <p>📋 {{len .Cards}} quests</p>
-
-                    <p>📈 {{.Progress}}%</p>
-
-                    <progress value="{{.Progress}}" max="100"></progress>
-
-                    <form action="/projects/delete" method="POST">
-                        <input
-                            type="hidden"
-                            name="project_id"
-                            value="{{.ID}}"
-                        />
-
-                        <button>Excluir</button>
-                    </form>
+                            <form action="/projects/delete" method="POST">
+                                <input
+                                    type="hidden"
+                                    name="project_id"
+                                    value="{{.ID}}"
+                                />
+                                <button type="submit" class="btn-sm btn-danger">
+                                    Excluir
+                                </button>
+                            </form>
+                        </div>
+                    </article>
+                    {{else}}
+                    <p class="empty-state">Nenhum projeto ainda.</p>
+                    {{end}}
                 </div>
-
-                {{else}}
-
-                <p>Nenhum projeto ainda</p>
-
-                {{end}}
             </section>
         </main>
     </body>

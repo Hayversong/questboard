@@ -3,32 +3,46 @@ const containers = document.querySelectorAll(".tasks-container");
 let dragged = null;
 
 document.querySelectorAll(".task-card").forEach((card) => {
-    card.addEventListener("dragstart", (e) => {
+    card.addEventListener("dragstart", (event) => {
         dragged = card;
-        e.dataTransfer.effectAllowed = "move";
+        event.dataTransfer.effectAllowed = "move";
         card.classList.add("dragging");
     });
 
     card.addEventListener("dragend", async () => {
         card.classList.remove("dragging");
         await saveState();
+        card.classList.add("drop-success");
+        window.setTimeout(() => card.classList.remove("drop-success"), 350);
         dragged = null;
     });
 });
 
 containers.forEach((container) => {
-    container.addEventListener("dragover", (e) => {
-        e.preventDefault();
+    container.addEventListener("dragover", (event) => {
+        event.preventDefault();
 
         if (!dragged) return;
 
-        const after = getCardAfterCursor(container, e.clientY);
+        const after = getCardAfterCursor(container, event.clientY);
 
         if (!after) {
             container.appendChild(dragged);
         } else {
             container.insertBefore(dragged, after);
         }
+    });
+
+    container.addEventListener("dragenter", () => {
+        container.classList.add("drag-hover");
+    });
+
+    container.addEventListener("dragleave", () => {
+        container.classList.remove("drag-hover");
+    });
+
+    container.addEventListener("drop", () => {
+        container.classList.remove("drag-hover");
     });
 });
 
@@ -50,10 +64,12 @@ function getCardAfterCursor(container, y) {
     ).element;
 }
 
-// Salva ordem E status de cada card conforme a coluna onde está
 async function saveState() {
-    const projectId = document.querySelector(".container").dataset.projectId;
+    const board = document.querySelector(".container");
 
+    if (!board) return;
+
+    const projectId = board.dataset.projectId;
     const cards = [];
 
     document.querySelectorAll(".tasks-container").forEach((column) => {
