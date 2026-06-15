@@ -17,6 +17,7 @@ O projeto existe principalmente para aprender engenharia de software construindo
 
 ```
 ![Home](docs/screenshots/home.png)
+<img src="docs/screenshots/home.png" alt="Home" width="600"/>
 ```
 
 ---
@@ -28,6 +29,7 @@ O projeto existe principalmente para aprender engenharia de software construindo
 
 ```
 ![Board](docs/screenshots/projeto.png)
+<img src="docs/screenshots/projeto.png" alt="Board" width="600"/>
 ```
 
 ---
@@ -39,6 +41,7 @@ O projeto existe principalmente para aprender engenharia de software construindo
 
 ```
 ![Card](docs/screenshots/card.png)
+<img src="docs/screenshots/card.png" alt="Card" width="600"/>
 ```
 
 ---
