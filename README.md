@@ -1,80 +1,186 @@
 # QuestBoard
 
-QuestBoard é um sistema web estilo **Kanban** para acompanhar o desenvolvimento de projetos de jogos.
+> Kanban gamificado para acompanhar o desenvolvimento de jogos — construído do zero com Go.
 
-O objetivo principal deste projeto é estudar **desenvolvimento web com Go**, construindo uma aplicação real sem frameworks.
+QuestBoard é um sistema web estilo Kanban onde cada tarefa é uma **Quest**, o progresso vira **XP** e projetos ganham **Level** e **Rank** conforme as tarefas são concluídas.
+
+O projeto existe principalmente para aprender engenharia de software construindo algo real — sem frameworks, sem ORMs, sem magia.
 
 ---
 
-## Motivação
+## Screenshots
 
-Depois de construir uma To-Do App simples, surgiu a ideia de criar algo mais próximo de um produto real.
+### Home — Lista de Projetos
 
-QuestBoard nasceu para resolver um problema pessoal:
+<!-- Adicione um print da página inicial aqui -->
+<!-- Exemplo: ![Home](docs/screenshots/home.png) -->
 
-> acompanhar desenvolvimento de jogos organizando features em um board simples.
-
-Exemplo:
-
-```text
-Dungeon Survivor
-
-Backlog
-- Loja
-- Boss
-
-Doing
-- Sistema XP
-
-Done
-- Movimento
-- Inimigos
+```
+[ print da home aqui ]
 ```
 
 ---
 
-# Tecnologias
+### Board — Kanban do Projeto
 
-Backend:
-- Go
-- net/http
-- html/template
+<!-- Adicione um print do board Kanban aqui -->
+<!-- Exemplo: ![Board](docs/screenshots/board.png) -->
 
-Frontend:
-- HTML
-- CSS
+```
+[ print do board aqui ]
+```
 
-Persistência:
-- JSON
+---
 
-Ferramentas:
-- Git
-- GitHub
+### Card — Detalhes e Edição
+
+<!-- Adicione um print de um card expandido com o form de edição aqui -->
+<!-- Exemplo: ![Card](docs/screenshots/card.png) -->
+
+```
+[ print do card expandido aqui ]
+```
+
+---
+
+## Funcionalidades
+
+### Projetos
+- [x] Criar projeto
+- [x] Renomear projeto
+- [x] Excluir projeto
+- [x] Dashboard com métricas globais (projetos, quests, XP total)
+
+### Cards (Quests)
+- [x] Criar card com título, descrição, raridade e prazo
+- [x] Editar card inline (formulário dentro do próprio card)
+- [x] Excluir card
+- [x] Mover entre colunas via drag & drop
+- [x] Arrastar para reordenar dentro da coluna
+- [x] Status e ordem persistidos ao recarregar a página
+
+### Gamificação
+- [x] Sistema de XP por raridade de card
+- [x] Level calculado a partir do XP acumulado
+- [x] Rank baseado no level (Novato → Aventureiro → Herói → Lenda)
+- [x] Conquistas desbloqueadas por progressão
+- [x] Log de atividades recentes do projeto
+
+### Visual
+- [x] Badges de raridade (Comum / Rara / Épica / Lendária)
+- [x] Badges de status por cor
+- [x] Prazo com indicador de atraso
+- [x] Barra de progresso por projeto
+- [x] Layout responsivo (desktop, tablet, mobile)
+
+---
+
+## Raridade dos Cards
+
+| Raridade   | XP   | Cor      |
+|------------|------|----------|
+| Comum      |  50  | Cinza    |
+| Rara       | 150  | Azul     |
+| Épica      | 300  | Roxo     |
+| Lendária   | 600  | Dourado  |
+
+---
+
+## Stack
+
+**Backend**
+- Go (sem frameworks)
+- `net/http` — servidor HTTP
+- `html/template` — renderização server-side
+
+**Frontend**
+- HTML semântico
+- CSS puro (variáveis, grid, responsivo)
+- JavaScript vanilla (drag & drop)
+
+**Persistência**
+- JSON em arquivo (`data/projects.json`)
+
+**Ferramentas**
+- Git / GitHub
 - WSL
 
 ---
 
-# Estrutura do Projeto
+## Arquitetura
 
-```text
+```
+HTTP Request
+     ↓
+  Handler        → lê request, chama service, renderiza template
+     ↓
+  Service        → regras de negócio, validações, erros sentinela
+     ↓
+  Storage        → lê e escreve JSON
+     ↓
+  Model          → structs + métodos de domínio (XP, Level, Rank...)
+```
+
+Cada camada tem responsabilidade única. Handlers nunca acessam storage diretamente.
+
+---
+
+## Estrutura de Arquivos
+
+```
 questboard/
-
 ├── cmd/
 │   └── server/
-│       └── main.go
+│       └── main.go              ← ponto de entrada, registro de rotas
 │
 ├── internal/
 │   ├── handler/
+│   │   ├── error_handler.go     ← helper: traduz erros de service em HTTP
+│   │   ├── project_handler.go   ← GET / e GET /project
+│   │   ├── project_create_handler.go
+│   │   ├── project_update_handler.go
+│   │   ├── project_delete_hanlder.go
+│   │   ├── card_handler.go      ← criar e mover card
+│   │   ├── card_update_handler.go
+│   │   ├── card_delete_handler.go
+│   │   ├── card_status_handler.go
+│   │   └── card_reorder_handler.go
+│   │
 │   ├── model/
+│   │   ├── project.go           ← Project + Progress, XP, Level, Rank, Achievements
+│   │   ├── card.go              ← Card + XP, IsLate, DeadlineLabel, RarityLabel
+│   │   ├── dashboard.go
+│   │   ├── achievement.go
+│   │   └── activity.go
+│   │
 │   ├── service/
+│   │   ├── validation_service.go  ← erros sentinela + helpers isValidRarity/Status
+│   │   ├── project_service.go
+│   │   ├── project_update_service.go
+│   │   ├── project_delete_service.go
+│   │   ├── card_service.go
+│   │   ├── card_update_service.go
+│   │   ├── card_delete_service.go
+│   │   ├── card_status_service.go
+│   │   ├── card_reorder_service.go
+│   │   └── activity_service.go
+│   │
 │   └── storage/
+│       └── json_store.go        ← LoadProjects / SaveProjects
 │
 ├── web/
 │   ├── templates/
+│   │   ├── home.html            ← lista de projetos + dashboard
+│   │   └── project.html         ← board kanban + criação/edição de cards
+│   │
 │   └── static/
+│       ├── css/
+│       │   └── style.css
+│       └── js/
+│           └── kanban.js        ← drag & drop com persistência de status e ordem
 │
 ├── data/
-│   └── projects.json
+│   └── projects.json            ← persistência local
 │
 ├── go.mod
 └── README.md
@@ -82,168 +188,67 @@ questboard/
 
 ---
 
-# Arquitetura
+## Rotas
 
-O projeto segue separação simples de responsabilidades.
-
-```text
-HTTP
-↓
-Handler
-↓
-Service
-↓
-Storage
-↓
-JSON
-```
-
-### Handler
-Responsável por:
-- receber requisições
-- carregar dados
-- renderizar templates
+| Método | Rota              | Descrição                        |
+|--------|-------------------|----------------------------------|
+| GET    | `/`               | Home — lista de projetos         |
+| GET    | `/project?id=`    | Board Kanban do projeto          |
+| POST   | `/projects`       | Criar projeto                    |
+| POST   | `/projects/rename`| Renomear projeto                 |
+| POST   | `/projects/delete`| Excluir projeto                  |
+| POST   | `/cards`          | Criar card                       |
+| POST   | `/cards/update`   | Editar card                      |
+| POST   | `/cards/delete`   | Excluir card                     |
+| POST   | `/cards/move`     | Avançar status do card           |
+| POST   | `/cards/status`   | Atualizar status diretamente     |
+| POST   | `/cards/reorder`  | Salvar ordem e status (JSON)     |
 
 ---
 
-### Service
-Responsável por:
-- regras de negócio
-- validações
-- operações da aplicação
-
----
-
-### Storage
-Responsável por:
-- leitura de JSON
-- escrita de JSON
-
----
-
-### Model
-Responsável por:
-- representar entidades do sistema
-
----
-
-# Modelo de Dados
-
-## Project
+## Modelo de Dados
 
 ```go
 type Project struct {
-	ID string
-	Name string
-	Cards []Card
+    ID         string
+    Name       string
+    Cards      []Card
+    Activities []Activity
 }
-```
 
-## Card
-
-```go
 type Card struct {
-	ID string
-	Title string
-	Description string
-	Status string
+    ID          string
+    Title       string
+    Description string
+    Status      string    // backlog | doing | done
+    Rarity      string    // common | rare | epic | legendary
+    Deadline    string    // YYYY-MM-DD
+    Order       int
 }
 ```
 
-Status disponíveis:
-
-```text
-backlog
-doing
-done
-```
-
----
-
-# Funcionalidades
-
-## Implementadas
-
-- [x] Estrutura inicial
-- [x] Servidor HTTP
-- [x] Templates HTML
-- [x] Persistência em JSON
-- [x] Visualização de projetos
-- [x] Visualização do board
-- [x] Organização por colunas
-
----
-
-## Em desenvolvimento
-
-- [x] Criar cards
-- [x] Excluir cards
-- [x] Mover entre colunas
-- [x] Melhorar UI
-- [ ] Validação de dados
-
----
-
-## Futuro
-
-- [ ] SQLite
-- [ ] API REST
-- [ ] Drag and Drop
-- [x] Dashboard
-- [ ] Tags
-- [ ] Docker
-- [ ] Deploy
-
----
-
-# Como executar
-
-Clone:
-
-```bash
-git clone git@github.com:SEU_USUARIO/questboard.git
-```
-
-Entrar:
-
-```bash
-cd questboard
-```
-
-Executar:
-
-```bash
-go run ./cmd/server
-```
-
-Abrir:
-
-```text
-http://localhost:8080
-```
-
----
-
-# Persistência
-
-Os dados são armazenados em:
-
-```text
-data/projects.json
-```
-
-Exemplo:
+### Exemplo — `data/projects.json`
 
 ```json
 [
   {
-    "ID": "1",
+    "ID": "1750000000000000000",
     "Name": "Dungeon Survivor",
     "Cards": [
       {
-        "ID": "1",
-        "Title": "Sistema XP",
-        "Status": "doing"
+        "ID": "1750000000000000001",
+        "Title": "Sistema de XP",
+        "Description": "Ganhar XP ao derrotar inimigos",
+        "Status": "doing",
+        "Rarity": "epic",
+        "Deadline": "2025-07-01",
+        "Order": 0
+      }
+    ],
+    "Activities": [
+      {
+        "Message": "🚀 Quest iniciada: Sistema de XP",
+        "Time": "15/06 14:32"
       }
     ]
   }
@@ -252,18 +257,54 @@ Exemplo:
 
 ---
 
-# Objetivo de aprendizado
+## Como executar
 
-Este projeto existe para praticar:
+**Requisitos:** Go 1.21+
 
-- Go Web
-- Arquitetura em camadas
-- Persistência
-- Templates
-- Organização de código
-- Git
-- Desenvolvimento incremental
+```bash
+# Clonar
+git clone https://github.com/Hayversong/questboard.git
+cd questboard
+
+# Executar
+go run ./cmd/server
+```
+
+Abrir no navegador:
+
+```
+http://localhost:8080
+```
+
+Os dados são salvos automaticamente em `data/projects.json`. O arquivo é criado na primeira execução.
 
 ---
 
-Feito por Hayverson
+## Aprendizados
+
+Conceitos praticados durante o desenvolvimento:
+
+- Servidor HTTP sem framework com `net/http`
+- Renderização server-side com `html/template`
+- Separação de responsabilidades em camadas (Handler → Service → Storage)
+- Erros sentinela com `errors.New` e `errors.Is`
+- Persistência com `encoding/json`
+- Métodos em structs Go (domínio rico no model)
+- Drag & drop com a API nativa do navegador
+- CSS Grid e responsividade sem framework
+
+---
+
+## Roadmap
+
+- [ ] Migrar persistência para SQLite
+- [ ] Filtro e busca de cards
+- [ ] Tags nos cards
+- [ ] Responsáveis por card
+- [ ] API REST (JSON responses)
+- [ ] Docker
+- [ ] Deploy
+
+---
+
+Feito por [Hayverson](https://github.com/Hayversong) — projeto de aprendizado em Go.
