@@ -10,35 +10,35 @@ O projeto existe principalmente para aprender engenharia de software construindo
 
 ## Screenshots
 
-### Home — Lista de Projetos
+### Home: Lista de Projetos
 
 <!-- Adicione um print da página inicial aqui -->
 <!-- Exemplo: ![Home](docs/screenshots/home.png) -->
 
 ```
-[ print da home aqui ]
+![Home](docs/screenshots/home.png)
 ```
 
 ---
 
-### Board — Kanban do Projeto
+### Board: Kanban do Projeto
 
 <!-- Adicione um print do board Kanban aqui -->
 <!-- Exemplo: ![Board](docs/screenshots/board.png) -->
 
 ```
-[ print do board aqui ]
+![Board](docs/screenshots/projeto.png)
 ```
 
 ---
 
-### Card — Detalhes e Edição
+### Card: Detalhes e Edição
 
 <!-- Adicione um print de um card expandido com o form de edição aqui -->
 <!-- Exemplo: ![Card](docs/screenshots/card.png) -->
 
 ```
-[ print do card expandido aqui ]
+![Card](docs/screenshots/card.png)
 ```
 
 ---
