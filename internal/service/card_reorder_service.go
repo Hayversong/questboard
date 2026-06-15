@@ -5,8 +5,9 @@ import (
 )
 
 type CardOrder struct {
-	ID    string `json:"id"`
-	Order int    `json:"order"`
+	ID     string `json:"id"`
+	Order  int    `json:"order"`
+	Status string `json:"status"`
 }
 
 func ReorderCards(projectID string, cards []CardOrder) error {
@@ -26,6 +27,9 @@ func ReorderCards(projectID string, cards []CardOrder) error {
 		if item.Order < 0 {
 			return ErrInvalidOrder
 		}
+		if item.Status != "" && !isValidStatus(item.Status) {
+			return ErrInvalidStatus
+		}
 	}
 
 	projects, err := storage.LoadProjects()
@@ -40,11 +44,12 @@ func ReorderCards(projectID string, cards []CardOrder) error {
 		}
 
 		for _, item := range cards {
-
 			for c := range projects[p].Cards {
-
 				if projects[p].Cards[c].ID == item.ID {
 					projects[p].Cards[c].Order = item.Order
+					if item.Status != "" {
+						projects[p].Cards[c].Status = item.Status
+					}
 				}
 			}
 		}

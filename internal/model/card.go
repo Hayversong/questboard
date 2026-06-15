@@ -100,6 +100,30 @@ func (c Card) XP() int {
 	}
 }
 
+func (c Card) RarityLabel() string {
+	switch c.Rarity {
+	case "rare":
+		return "Rara"
+	case "epic":
+		return "\u00c9pica"
+	case "legendary":
+		return "Lend\u00e1ria"
+	default:
+		return "Comum"
+	}
+}
+
+func (c Card) StatusLabel() string {
+	switch c.Status {
+	case "doing":
+		return "Fazendo"
+	case "done":
+		return "Conclu\u00eddo"
+	default:
+		return "A Fazer"
+	}
+}
+
 func (c Card) Color() string {
 
 	switch c.Rarity {

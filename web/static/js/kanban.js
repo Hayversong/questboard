@@ -3,23 +3,15 @@ const containers = document.querySelectorAll(".tasks-container");
 let dragged = null;
 
 document.querySelectorAll(".task-card").forEach((card) => {
-    card.draggable = true;
-
     card.addEventListener("dragstart", (e) => {
         dragged = card;
-
         e.dataTransfer.effectAllowed = "move";
-
         card.classList.add("dragging");
     });
 
-    card.addEventListener("dragend", async (e) => {
-        console.log("DRAG END");
-
+    card.addEventListener("dragend", async () => {
         card.classList.remove("dragging");
-
-        await saveOrder();
-
+        await saveState();
         dragged = null;
     });
 });
@@ -28,9 +20,9 @@ containers.forEach((container) => {
     container.addEventListener("dragover", (e) => {
         e.preventDefault();
 
-        const after = getCardAfterCursor(container, e.clientY);
-
         if (!dragged) return;
+
+        const after = getCardAfterCursor(container, e.clientY);
 
         if (!after) {
             container.appendChild(dragged);
@@ -46,68 +38,47 @@ function getCardAfterCursor(container, y) {
     return cards.reduce(
         (closest, card) => {
             const box = card.getBoundingClientRect();
-
             const offset = y - box.top - box.height / 2;
 
             if (offset < 0 && offset > closest.offset) {
-                return {
-                    offset,
-                    element: card,
-                };
+                return { offset, element: card };
             }
 
             return closest;
         },
-        {
-            offset: Number.NEGATIVE_INFINITY,
-        },
+        { offset: Number.NEGATIVE_INFINITY },
     ).element;
 }
 
-async function saveOrder() {
-    console.log("SALVANDO ORDEM");
-
+// Salva ordem E status de cada card conforme a coluna onde está
+async function saveState() {
     const projectId = document.querySelector(".container").dataset.projectId;
 
-    const order = [];
+    const cards = [];
 
     document.querySelectorAll(".tasks-container").forEach((column) => {
-        column.querySelectorAll(".task-card").forEach((card, index) => {
-            order.push({
-                id: card.dataset.id,
+        const status = column.dataset.status;
 
+        column.querySelectorAll(".task-card").forEach((card, index) => {
+            cards.push({
+                id: card.dataset.id,
                 order: index,
+                status: status,
             });
         });
     });
 
-    console.log(
-        JSON.stringify(
-            {
-                project_id: projectId,
-
-                cards: order,
-            },
-            null,
-            2,
-        ),
-    );
-
     try {
-        await fetch("/cards/reorder", {
+        const response = await fetch("/cards/reorder", {
             method: "POST",
-
-            headers: {
-                "Content-Type": "application/json",
-            },
-
-            body: JSON.stringify({
-                project_id: projectId,
-
-                cards: order,
-            }),
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ project_id: projectId, cards }),
         });
+
+        if (!response.ok) {
+            console.error("Erro ao salvar:", response.status);
+        }
     } catch (err) {
-        console.error(err);
+        console.error("Erro ao salvar estado:", err);
     }
 }

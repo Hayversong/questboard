@@ -1,282 +1,286 @@
 <!doctype html>
-
 <html lang="pt-br">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
         <title>{{.Name}} - QuestBoard</title>
-
         <link rel="stylesheet" href="/static/css/style.css" />
     </head>
 
     <body>
         <nav class="navbar">
             <div class="navbar-container">
-                <a href="/" class="navbar-brand"> QuestBoard </a>
-
-                <h2 class="navbar-title">{{.Name}}</h2>
+                <a href="/" class="navbar-brand">QuestBoard</a>
+                <span class="navbar-title">{{.Name}}</span>
             </div>
         </nav>
 
         <div class="hero">
             <div class="hero-content">
                 <h1>{{.Name}}</h1>
-
-                <p>Acompanhe o progresso e organize suas tarefas</p>
+                <p>Nível {{.Level}} · {{.Rank}} · {{.XP}} XP</p>
             </div>
         </div>
 
         <main class="container" data-project-id="{{.ID}}">
-            <input type="hidden" id="project-id" value="{{.ID}}" />
+
+            <!-- Stats -->
             <section class="stats-grid">
                 <div class="stat-box">
                     <div class="stat-label">Progresso</div>
-
                     <div class="progress-inline">
                         <div class="progress-bar-horizontal">
-                            <div
-                                class="progress-fill"
-                                style="width: {{.Progress}}%"
-                            ></div>
+                            <div class="progress-fill" style="width: {{.Progress}}%"></div>
                         </div>
-
-                        <span class="progress-percentage">
-                            {{.Progress}}%
-                        </span>
+                        <span class="progress-percentage">{{.Progress}}%</span>
                     </div>
                 </div>
-
                 <div class="stat-box">
                     <div class="stat-value">{{.XP}}</div>
-
-                    <div class="stat-label">Pontos</div>
+                    <div class="stat-label">XP</div>
                 </div>
-
                 <div class="stat-box">
                     <div class="stat-value">{{.Level}}</div>
-
                     <div class="stat-label">Nível</div>
                 </div>
-
                 <div class="stat-box accent">
                     <div class="stat-value">{{.Rank}}</div>
-
-                    <div class="stat-label">Posição</div>
+                    <div class="stat-label">Rank</div>
                 </div>
             </section>
 
+            <!-- Achievements -->
             {{if .Achievements}}
-
             <section class="achievements-section">
                 <h3>Conquistas</h3>
-
                 <div class="achievements-list">
                     {{range .Achievements}}
-
                     <div class="achievement-item">⭐ {{.Title}}</div>
-
                     {{end}}
                 </div>
             </section>
-
             {{end}}
 
+            <!-- Activity -->
             <section class="activity-section">
                 <h3>Atividade Recente</h3>
-
                 <div class="activity-list">
                     {{range .Activities}}
-
                     <div class="activity-item">
-                        <small class="activity-time"> {{.Time}} </small>
-
+                        <small class="activity-time">{{.Time}}</small>
                         <p class="activity-message">{{.Message}}</p>
                     </div>
-
                     {{else}}
-
-                    <div class="activity-item">
-                        Nenhuma atividade registrada
-                    </div>
-
+                    <div class="activity-item">Nenhuma atividade registrada</div>
                     {{end}}
                 </div>
             </section>
 
+            <!-- Criar quest -->
             <section class="form-section">
-                <h3>Adicionar Tarefa</h3>
-
+                <h3>Nova Quest</h3>
                 <form action="/cards" method="POST" class="task-form">
                     <input type="hidden" name="project_id" value="{{.ID}}" />
-
                     <input
                         type="text"
                         name="title"
-                        placeholder="Título"
+                        placeholder="Título da quest"
                         required
                         class="form-input"
                     />
-
                     <textarea
                         name="description"
-                        placeholder="Descrição"
+                        placeholder="Descrição (opcional)"
                         class="form-textarea"
                     ></textarea>
-
                     <select name="rarity" class="form-select">
-                        <option value="common">Baixa</option>
-
-                        <option value="rare">Média</option>
-
-                        <option value="epic">Alta</option>
-
-                        <option value="legendary">Urgente</option>
+                        <option value="common">Comum — 50 XP</option>
+                        <option value="rare">Rara — 150 XP</option>
+                        <option value="epic">Épica — 300 XP</option>
+                        <option value="legendary">Lendária — 600 XP</option>
                     </select>
-
                     <input type="date" name="deadline" class="form-input" />
-
-                    <button type="submit" class="btn btn-primary">
-                        Adicionar
-                    </button>
+                    <button type="submit" class="btn-primary">+ Criar Quest</button>
                 </form>
             </section>
 
+            <!-- Kanban -->
             <section class="kanban-section">
-                <h3>Tarefas</h3>
-
+                <h3>Quadro</h3>
                 <div class="kanban-board">
+
                     <!-- BACKLOG -->
-
                     <div class="kanban-column">
-                        <div class="column-title">A Fazer</div>
-
+                        <div class="column-header">
+                            <span class="column-title column-title-backlog">⬜ A Fazer</span>
+                        </div>
                         <div class="tasks-container" data-status="backlog">
-                            {{range .Cards}} {{if eq .Status "backlog"}}
-
-                            <details
-                                class="task-card"
-                                draggable="true"
-                                data-id="{{.ID}}"
-                            >
-                                <summary>
-                                    <div
-                                        class="task-priority"
-                                        data-rarity="{{.Rarity}}"
-                                    ></div>
-
-                                    <div class="task-content">
-                                        <h4>{{.Title}}</h4>
-
+                            {{range .Cards}}{{if eq .Status "backlog"}}
+                            <details class="task-card" draggable="true" data-id="{{.ID}}">
+                                <summary class="task-summary">
+                                    <span class="task-title">{{.Title}}</span>
+                                    <div class="task-meta">
+                                        <span class="badge badge-{{.Rarity}}">{{.RarityLabel}}</span>
+                                        <span class="badge badge-status-backlog">A Fazer</span>
                                         {{if .DeadlineLabel}}
-
-                                        <span class="task-deadline">
-                                            {{.DeadlineLabel}}
+                                        <span class="badge {{if .IsLate}}badge-late{{else}}badge-deadline{{end}}">
+                                            📅 {{.DeadlineLabel}}
                                         </span>
-
                                         {{end}}
                                     </div>
                                 </summary>
-
                                 <div class="task-expanded">
                                     {{if .Description}}
-
-                                    <p>{{.Description}}</p>
-
+                                    <p class="task-description">{{.Description}}</p>
                                     {{end}}
 
-                                    <form action="/cards/move" method="POST">
-                                        <input
-                                            type="hidden"
-                                            name="project_id"
-                                            value="{{$.ID}}"
-                                        />
+                                    <details class="edit-section">
+                                        <summary class="edit-toggle">✏️ Editar</summary>
+                                        <form action="/cards/update" method="POST" class="edit-form">
+                                            <input type="hidden" name="project_id" value="{{$.ID}}" />
+                                            <input type="hidden" name="card_id" value="{{.ID}}" />
+                                            <input type="text" name="title" value="{{.Title}}" placeholder="Título" required />
+                                            <textarea name="description" placeholder="Descrição">{{.Description}}</textarea>
+                                            <select name="rarity">
+                                                <option value="common"    {{if eq .Rarity "common"}}selected{{end}}>Comum — 50 XP</option>
+                                                <option value="rare"      {{if eq .Rarity "rare"}}selected{{end}}>Rara — 150 XP</option>
+                                                <option value="epic"      {{if eq .Rarity "epic"}}selected{{end}}>Épica — 300 XP</option>
+                                                <option value="legendary" {{if eq .Rarity "legendary"}}selected{{end}}>Lendária — 600 XP</option>
+                                            </select>
+                                            <input type="date" name="deadline" value="{{.Deadline}}" />
+                                            <button type="submit" class="btn-sm btn-save">💾 Salvar</button>
+                                        </form>
+                                    </details>
 
-                                        <input
-                                            type="hidden"
-                                            name="card_id"
-                                            value="{{.ID}}"
-                                        />
-                                    </form>
-
-                                    <form action="/cards/delete" method="POST">
-                                        <input
-                                            type="hidden"
-                                            name="project_id"
-                                            value="{{$.ID}}"
-                                        />
-
-                                        <input
-                                            type="hidden"
-                                            name="card_id"
-                                            value="{{.ID}}"
-                                        />
-
-                                        <button class="btn btn-danger">
-                                            Excluir
-                                        </button>
-                                    </form>
+                                    <div class="task-actions">
+                                        <form action="/cards/delete" method="POST">
+                                            <input type="hidden" name="project_id" value="{{$.ID}}" />
+                                            <input type="hidden" name="card_id" value="{{.ID}}" />
+                                            <button class="btn-sm btn-danger">🗑️ Excluir</button>
+                                        </form>
+                                    </div>
                                 </div>
                             </details>
-
-                            {{end}} {{end}}
+                            {{end}}{{end}}
                         </div>
                     </div>
 
                     <!-- DOING -->
-
                     <div class="kanban-column">
-                        <div class="column-title">Fazendo</div>
-
+                        <div class="column-header">
+                            <span class="column-title column-title-doing">🔵 Fazendo</span>
+                        </div>
                         <div class="tasks-container" data-status="doing">
-                            {{range .Cards}} {{if eq .Status "doing"}}
+                            {{range .Cards}}{{if eq .Status "doing"}}
+                            <details class="task-card" draggable="true" data-id="{{.ID}}">
+                                <summary class="task-summary">
+                                    <span class="task-title">{{.Title}}</span>
+                                    <div class="task-meta">
+                                        <span class="badge badge-{{.Rarity}}">{{.RarityLabel}}</span>
+                                        <span class="badge badge-status-doing">Fazendo</span>
+                                        {{if .DeadlineLabel}}
+                                        <span class="badge {{if .IsLate}}badge-late{{else}}badge-deadline{{end}}">
+                                            📅 {{.DeadlineLabel}}
+                                        </span>
+                                        {{end}}
+                                    </div>
+                                </summary>
+                                <div class="task-expanded">
+                                    {{if .Description}}
+                                    <p class="task-description">{{.Description}}</p>
+                                    {{end}}
 
-                            <div
-                                class="task-card"
-                                draggable="true"
-                                data-id="{{.ID}}"
-                            >
-                                <h4>{{.Title}}</h4>
+                                    <details class="edit-section">
+                                        <summary class="edit-toggle">✏️ Editar</summary>
+                                        <form action="/cards/update" method="POST" class="edit-form">
+                                            <input type="hidden" name="project_id" value="{{$.ID}}" />
+                                            <input type="hidden" name="card_id" value="{{.ID}}" />
+                                            <input type="text" name="title" value="{{.Title}}" placeholder="Título" required />
+                                            <textarea name="description" placeholder="Descrição">{{.Description}}</textarea>
+                                            <select name="rarity">
+                                                <option value="common"    {{if eq .Rarity "common"}}selected{{end}}>Comum — 50 XP</option>
+                                                <option value="rare"      {{if eq .Rarity "rare"}}selected{{end}}>Rara — 150 XP</option>
+                                                <option value="epic"      {{if eq .Rarity "epic"}}selected{{end}}>Épica — 300 XP</option>
+                                                <option value="legendary" {{if eq .Rarity "legendary"}}selected{{end}}>Lendária — 600 XP</option>
+                                            </select>
+                                            <input type="date" name="deadline" value="{{.Deadline}}" />
+                                            <button type="submit" class="btn-sm btn-save">💾 Salvar</button>
+                                        </form>
+                                    </details>
 
-                                {{if .Description}}
-
-                                <p>{{.Description}}</p>
-
-                                {{end}}
-                            </div>
-
-                            {{end}} {{end}}
+                                    <div class="task-actions">
+                                        <form action="/cards/delete" method="POST">
+                                            <input type="hidden" name="project_id" value="{{$.ID}}" />
+                                            <input type="hidden" name="card_id" value="{{.ID}}" />
+                                            <button class="btn-sm btn-danger">🗑️ Excluir</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </details>
+                            {{end}}{{end}}
                         </div>
                     </div>
 
                     <!-- DONE -->
-
                     <div class="kanban-column">
-                        <div class="column-title">Concluído</div>
-
+                        <div class="column-header">
+                            <span class="column-title column-title-done">✅ Concluído</span>
+                        </div>
                         <div class="tasks-container" data-status="done">
-                            {{range .Cards}} {{if eq .Status "done"}}
+                            {{range .Cards}}{{if eq .Status "done"}}
+                            <details class="task-card" draggable="true" data-id="{{.ID}}">
+                                <summary class="task-summary">
+                                    <span class="task-title">{{.Title}}</span>
+                                    <div class="task-meta">
+                                        <span class="badge badge-{{.Rarity}}">{{.RarityLabel}}</span>
+                                        <span class="badge badge-status-done">Concluído</span>
+                                        {{if .DeadlineLabel}}
+                                        <span class="badge {{if .IsLate}}badge-late{{else}}badge-deadline{{end}}">
+                                            📅 {{.DeadlineLabel}}
+                                        </span>
+                                        {{end}}
+                                    </div>
+                                </summary>
+                                <div class="task-expanded">
+                                    {{if .Description}}
+                                    <p class="task-description">{{.Description}}</p>
+                                    {{end}}
 
-                            <div
-                                class="task-card"
-                                draggable="true"
-                                data-id="{{.ID}}"
-                            >
-                                <h4>{{.Title}}</h4>
+                                    <details class="edit-section">
+                                        <summary class="edit-toggle">✏️ Editar</summary>
+                                        <form action="/cards/update" method="POST" class="edit-form">
+                                            <input type="hidden" name="project_id" value="{{$.ID}}" />
+                                            <input type="hidden" name="card_id" value="{{.ID}}" />
+                                            <input type="text" name="title" value="{{.Title}}" placeholder="Título" required />
+                                            <textarea name="description" placeholder="Descrição">{{.Description}}</textarea>
+                                            <select name="rarity">
+                                                <option value="common"    {{if eq .Rarity "common"}}selected{{end}}>Comum — 50 XP</option>
+                                                <option value="rare"      {{if eq .Rarity "rare"}}selected{{end}}>Rara — 150 XP</option>
+                                                <option value="epic"      {{if eq .Rarity "epic"}}selected{{end}}>Épica — 300 XP</option>
+                                                <option value="legendary" {{if eq .Rarity "legendary"}}selected{{end}}>Lendária — 600 XP</option>
+                                            </select>
+                                            <input type="date" name="deadline" value="{{.Deadline}}" />
+                                            <button type="submit" class="btn-sm btn-save">💾 Salvar</button>
+                                        </form>
+                                    </details>
 
-                                {{if .Description}}
-
-                                <p>{{.Description}}</p>
-
-                                {{end}}
-                            </div>
-
-                            {{end}} {{end}}
+                                    <div class="task-actions">
+                                        <form action="/cards/delete" method="POST">
+                                            <input type="hidden" name="project_id" value="{{$.ID}}" />
+                                            <input type="hidden" name="card_id" value="{{.ID}}" />
+                                            <button class="btn-sm btn-danger">🗑️ Excluir</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </details>
+                            {{end}}{{end}}
                         </div>
                     </div>
+
                 </div>
             </section>
         </main>
+
         <script src="/static/js/kanban.js"></script>
     </body>
 </html>
