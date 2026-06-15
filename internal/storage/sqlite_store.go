@@ -72,8 +72,10 @@ func SQLiteFilePath() string {
 }
 
 func OpenSQLite() (*sql.DB, error) {
-	path := SQLiteFilePath()
+	return OpenSQLiteAt(SQLiteFilePath())
+}
 
+func OpenSQLiteAt(path string) (*sql.DB, error) {
 	if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
 		return nil, err
 	}
@@ -203,7 +205,11 @@ func LoadProjectsSQLite() ([]model.Project, error) {
 }
 
 func SaveProjectsSQLite(projects []model.Project) error {
-	db, err := OpenSQLite()
+	return SaveProjectsSQLiteToPath(projects, SQLiteFilePath())
+}
+
+func SaveProjectsSQLiteToPath(projects []model.Project, path string) error {
+	db, err := OpenSQLiteAt(path)
 	if err != nil {
 		return err
 	}

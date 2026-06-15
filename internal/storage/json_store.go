@@ -88,9 +88,13 @@ func SaveProjectsJSON(
 }
 
 func LoadProjectsJSON() ([]model.Project, error) {
+	return LoadProjectsJSONFromPath(DataFilePath())
+}
+
+func LoadProjectsJSONFromPath(path string) ([]model.Project, error) {
 
 	data, err := os.ReadFile(
-		DataFilePath(),
+		path,
 	)
 
 	if err != nil {
