@@ -227,9 +227,4 @@ Para uso publico, coloque o app atras de uma camada externa de protecao, como ac
 - Tags nos cards
 - Responsaveis por card
 - API REST
-- Autenticacao
 - Melhorias de operacao e observabilidade
-
-## Agentes de IA
-
-Para continuar o preparo de deploy ou revisar os criterios de aceite, leia `docs/DEPLOY_AGENT_BRIEF.md`.
