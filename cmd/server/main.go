@@ -3,13 +3,15 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
+	"time"
 
 	"github.com/Hayversong/questboard/internal/handler"
 )
 
 func main() {
 
-	// Arquivos estáticos
+	// Arquivos estaticos
 	http.Handle(
 		"/static/",
 		http.StripPrefix(
@@ -22,7 +24,20 @@ func main() {
 		),
 	)
 
-	// Visualização
+	http.HandleFunc(
+		"/healthz",
+		func(w http.ResponseWriter, r *http.Request) {
+			if r.Method != http.MethodGet {
+				http.Error(w, "Metodo invalido", http.StatusMethodNotAllowed)
+				return
+			}
+
+			w.WriteHeader(http.StatusOK)
+			w.Write([]byte("ok"))
+		},
+	)
+
+	// Visualizacao
 	http.HandleFunc(
 		"/",
 		handler.HomeHandler,
@@ -80,14 +95,22 @@ func main() {
 		handler.UpdateCardStatusHandler,
 	)
 
-	log.Println(
-		"Servidor rodando em http://localhost:8080",
-	)
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	server := &http.Server{
+		Addr:              ":" + port,
+		ReadHeaderTimeout: 5 * time.Second,
+		ReadTimeout:       10 * time.Second,
+		WriteTimeout:      10 * time.Second,
+		IdleTimeout:       60 * time.Second,
+	}
+
+	log.Printf("Servidor rodando em http://localhost:%s", port)
 
 	log.Fatal(
-		http.ListenAndServe(
-			":8080",
-			nil,
-		),
+		server.ListenAndServe(),
 	)
 }

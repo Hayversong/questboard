@@ -1,0 +1,11 @@
+.git
+.gitignore
+data/*.db
+data/*.db-*
+data/*.json
+!data/projects.example.json
+data/*.bak
+data/*.tmp
+server
+migrate
+questboard
