@@ -8,36 +8,40 @@
     </head>
 
     <body>
-        <main class="page-shell">
-            <header class="page-header">
-                <div>
+        <main class="page-shell tavern-board">
+            <header class="page-header guild-panel">
+                <div class="header-copy">
+                    <span class="eyebrow">Guild Hall</span>
                     <h1>QuestBoard</h1>
-                    <p>Organize projetos de jogos em quests, progresso e XP.</p>
+                    <p>Organize projetos de jogos como contratos de uma guilda: quests, XP, ranks e recompensas.</p>
                 </div>
 
-                <section class="dashboard-stats" aria-label="Resumo do quadro">
-                    <div class="dashboard-stat">
-                        <strong>{{.Stats.Projects}}</strong>
+                <section class="dashboard-stats hud-grid" aria-label="Resumo do quadro">
+                    <div class="dashboard-stat hud-box">
                         <span>Projetos</span>
+                        <strong>{{.Stats.Projects}}</strong>
                     </div>
-                    <div class="dashboard-stat">
-                        <strong>{{.Stats.Cards}}</strong>
+                    <div class="dashboard-stat hud-box">
                         <span>Quests</span>
+                        <strong>{{.Stats.Cards}}</strong>
                     </div>
-                    <div class="dashboard-stat">
-                        <strong>{{.Stats.Done}}</strong>
+                    <div class="dashboard-stat hud-box">
                         <span>Concluidas</span>
+                        <strong>{{.Stats.Done}}</strong>
                     </div>
-                    <div class="dashboard-stat">
-                        <strong>{{.Stats.XP}}</strong>
+                    <div class="dashboard-stat hud-box">
                         <span>XP total</span>
+                        <strong>{{.Stats.XP}}</strong>
                     </div>
                 </section>
             </header>
 
-            <section class="panel">
-                <h2 class="section-title">Novo projeto</h2>
-                <form action="/projects" method="POST">
+            <section class="panel quest-form-panel">
+                <div class="section-heading">
+                    <span class="section-kicker">Novo contrato</span>
+                    <h2 class="section-title">Registrar projeto</h2>
+                </div>
+                <form action="/projects" method="POST" class="guild-form">
                     <input
                         type="text"
                         name="name"
@@ -49,12 +53,16 @@
             </section>
 
             <section class="panel">
-                <h2 class="section-title">Projetos</h2>
+                <div class="section-heading">
+                    <span class="section-kicker">Mural da guilda</span>
+                    <h2 class="section-title">Projetos ativos</h2>
+                </div>
 
                 <div class="project-grid">
                     {{range .Projects}}
-                    <article class="project-card">
-                        <div>
+                    <article class="project-card quest-contract">
+                        <div class="contract-main">
+                            <span class="contract-label">Contrato</span>
                             <h3>
                                 <a href="/project?id={{.ID}}">{{.Name}}</a>
                             </h3>
@@ -97,7 +105,7 @@
                         </div>
                     </article>
                     {{else}}
-                    <p class="empty-state">Nenhum projeto ainda.</p>
+                    <p class="empty-state">Nenhum contrato no mural da guilda.</p>
                     {{end}}
                 </div>
             </section>
