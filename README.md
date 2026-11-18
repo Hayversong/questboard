@@ -1,8 +1,10 @@
 # QuestBoard
 
-Kanban gamificado para acompanhar o desenvolvimento de jogos, construido do zero com Go.
+[![CI](https://github.com/Hayversong/questboard/actions/workflows/ci.yml/badge.svg)](https://github.com/Hayversong/questboard/actions/workflows/ci.yml)
 
-QuestBoard e um sistema web estilo Kanban onde cada tarefa e uma Quest, o progresso vira XP e projetos ganham Level e Rank conforme as tarefas sao concluidas.
+Kanban gamificado para acompanhar o desenvolvimento de jogos, construído do zero com Go.
+
+QuestBoard é um sistema web estilo Kanban onde cada tarefa é uma Quest, o progresso vira XP e projetos ganham Level e Rank conforme as tarefas são concluidas.
 
 O projeto existe principalmente para aprender engenharia de software construindo algo real: Go, net/http, html/template, CSS puro e JavaScript vanilla.
 
@@ -12,29 +14,29 @@ O projeto existe principalmente para aprender engenharia de software construindo
 - Criar projeto
 - Renomear projeto
 - Excluir projeto
-- Dashboard com metricas globais de projetos, quests e XP total
+- Dashboard com métricas globais de projetos, quests e XP total
 
 ### Cards / Quests
-- Criar card com titulo, descricao, raridade e prazo
+- Criar card com título, descrição, raridade e prazo
 - Editar card inline
 - Excluir card
 - Mover entre colunas via drag and drop
 - Reordenar cards dentro da coluna
-- Persistir status e ordem ao recarregar a pagina
+- Persistir status e ordem ao recarregar a página
 
-### Gamificacao
+### Gamificação
 - XP por raridade de card
 - Level calculado a partir do XP acumulado
 - Rank baseado no level
-- Conquistas desbloqueadas por progressao
+- Conquistas desbloqueadas por progressão
 - Log de atividades recentes do projeto
 
-### Operacao
-- Persistencia em JSON para uso local simples
-- Persistencia em SQLite para deploy
-- Migracao de JSON para SQLite
+### Operação
+- Persistência em JSON para uso local simples
+- Persistência em SQLite para deploy
+- Migração de JSON para SQLite
 - Healthcheck em `GET /healthz`
-- Porta configuravel por `PORT`
+- Porta configurável por `PORT`
 - Imagem Docker com volume persistente em `/data`
 
 ## Stack
@@ -45,29 +47,29 @@ O projeto existe principalmente para aprender engenharia de software construindo
 - `html/template`
 
 **Frontend**
-- HTML semantico
+- HTML semântico
 - CSS puro
 - JavaScript vanilla
 
-**Persistencia**
-- JSON por padrao em desenvolvimento local
-- SQLite recomendado para producao
+**Persistência**
+- JSON por padrão em desenvolvimento local
+- SQLite recomendado para produção
 
 ## Arquitetura
 
 ```text
 HTTP Request
      |
-  Handler     -> le request, chama service, renderiza template
+  Handler     -> lê request, chama service, renderiza template
      |
-  Service     -> regras de negocio, validacoes, erros sentinela
+  Service     -> regras de negócio, validações, erros sentinela
      |
-  Storage     -> le e escreve JSON ou SQLite
+  Storage     -> lê e escreve JSON ou SQLite
      |
-  Model       -> structs e metodos de dominio
+  Model       -> structs e métodos de domínio
 ```
 
-Cada camada tem responsabilidade unica. Handlers nao acessam storage diretamente.
+Cada camada tem responsabilidade única. Handlers não acessam storage diretamente.
 
 ## Estrutura principal
 
@@ -75,11 +77,11 @@ Cada camada tem responsabilidade unica. Handlers nao acessam storage diretamente
 questboard/
   cmd/
     server/      # servidor web
-    migrate/     # migracao JSON -> SQLite
+    migrate/     # migração JSON -> SQLite
   internal/
     handler/     # handlers HTTP
-    model/       # entidades e regras de dominio
-    service/     # regras de negocio
+    model/       # entidades e regras de domínio
+    service/     # regras de negócio
     storage/     # persistencia JSON e SQLite
   web/
     templates/   # HTML server-side
@@ -91,7 +93,7 @@ questboard/
 
 ## Rotas
 
-| Metodo | Rota               | Descricao |
+| Método | Rota               | Descrição |
 |--------|--------------------|-----------|
 | GET    | `/`                | Home com lista de projetos |
 | GET    | `/project?id=`     | Board Kanban do projeto |
@@ -102,25 +104,25 @@ questboard/
 | POST   | `/cards`           | Criar card |
 | POST   | `/cards/update`    | Editar card |
 | POST   | `/cards/delete`    | Excluir card |
-| POST   | `/cards/move`      | Avancar status do card |
+| POST   | `/cards/move`      | Avançar status do card |
 | POST   | `/cards/status`    | Atualizar status diretamente |
 | POST   | `/cards/reorder`   | Salvar ordem e status |
 
-## Variaveis de ambiente
+## Variáveis de ambiente
 
-| Variavel | Padrao | Descricao |
+| Variável | Padrão | Descrição |
 |----------|--------|-----------|
 | `PORT` | `8080` | Porta HTTP usada pelo servidor |
 | `QUESTBOARD_STORAGE` | vazio | Use `sqlite` para ativar SQLite explicitamente |
 | `QUESTBOARD_DATA_FILE` | `data/projects.json` | Caminho do arquivo JSON |
-| `QUESTBOARD_DATA_DIR` | `data` | Diretorio base para dados quando o arquivo nao e informado |
+| `QUESTBOARD_DATA_DIR` | `data` | Diretório base para dados quando o arquivo não é informado |
 | `QUESTBOARD_DB_FILE` | `data/questboard.db` | Caminho do banco SQLite |
 
-Observacao: se `QUESTBOARD_DB_FILE` estiver definido, o projeto usa SQLite mesmo sem `QUESTBOARD_STORAGE=sqlite`.
+Observação: se `QUESTBOARD_DB_FILE` estiver definido, o projeto usa SQLite mesmo sem `QUESTBOARD_STORAGE=sqlite`.
 
 ## Como executar localmente com JSON
 
-**Requisitos:** Go 1.25+ ou uma versao compativel com o `go.mod`.
+**Requisitos:** Go 1.25+ ou uma versão compatível com o `go.mod`.
 
 ```bash
 go run ./cmd/server
@@ -132,7 +134,7 @@ Acesse:
 http://localhost:8080
 ```
 
-Nesse modo, os dados sao salvos em `data/projects.json`. O arquivo e criado automaticamente na primeira gravacao.
+Nesse modo, os dados são salvos em `data/projects.json`. O arquivo é criado automaticamente na primeira gravacao.
 
 ## Como executar localmente com SQLite
 
@@ -148,17 +150,17 @@ $env:QUESTBOARD_DB_FILE = "data/questboard.db"
 go run ./cmd/server
 ```
 
-SQLite e o caminho recomendado para deploy porque usa um unico arquivo de banco e funciona bem com volume persistente.
+SQLite é o caminho recomendado para deploy porque usa um único arquivo de banco e funciona bem com volume persistente.
 
-## Migracao de JSON para SQLite
+## Migração de JSON para SQLite
 
-Se voce ja tem dados em JSON, gere um banco SQLite com:
+Se você já tem dados em JSON, gere um banco SQLite com:
 
 ```bash
 go run ./cmd/migrate -from data/projects.json -to data/questboard.db
 ```
 
-Se o banco de destino ja existir e voce quiser sobrescrever:
+Se o banco de destino já existir e você quiser sobrescrever:
 
 ```bash
 go run ./cmd/migrate -from data/projects.json -to data/questboard.db -force
@@ -178,7 +180,7 @@ Executar com volume persistente:
 docker run --rm -p 8080:8080 -v questboard-data:/data questboard
 ```
 
-A imagem Docker define por padrao:
+A imagem Docker define por padrão:
 
 ```bash
 PORT=8080
@@ -186,13 +188,13 @@ QUESTBOARD_STORAGE=sqlite
 QUESTBOARD_DB_FILE=/data/questboard.db
 ```
 
-Importante: em producao, use sempre um volume persistente para `/data`. Sem volume persistente, os dados podem ser perdidos em rebuild, redeploy ou recriacao do container.
+Importante: em produção, use sempre um volume persistente para `/data`. Sem volume persistente, os dados podem ser perdidos em rebuild, redeploy ou recriacao do container.
 
 ## Deploy
 
 Para o primeiro deploy, use uma plataforma que suporte container Docker e volume persistente.
 
-Configuracao recomendada:
+Configuração recomendada:
 
 ```bash
 PORT=8080
@@ -200,11 +202,11 @@ QUESTBOARD_STORAGE=sqlite
 QUESTBOARD_DB_FILE=/data/questboard.db
 ```
 
-Se a plataforma injeta `PORT` automaticamente, nao fixe a porta manualmente; deixe a variavel da plataforma controlar isso.
+Se a plataforma injeta `PORT` automaticamente, não fixe a porta manualmente; deixe a variavel da plataforma controlar isso.
 
-## Verificacao
+## Verificação
 
-Antes de publicar uma versao, rode:
+Antes de publicar uma versão, rode:
 
 ```bash
 go test ./...
@@ -213,18 +215,18 @@ go build ./cmd/migrate
 docker build -t questboard .
 ```
 
-Em Windows acessando o projeto por `\\wsl.localhost`, o Go pode falhar com erro de lock no `go.mod`. Nesse caso, rode os comandos dentro do WSL com Go instalado ou copie o projeto para uma pasta temporaria local do Windows para validar.
+Em Windows acessando o projeto por `\\wsl.localhost`, o Go pode falhar com erro de lock no `go.mod`. Nesse caso, rode os comandos dentro do WSL com Go instalado ou copie o projeto para uma pasta temporária local do Windows para validar.
 
-## Seguranca
+## Segurança
 
-Esta primeira versao nao possui autenticacao e os formularios POST nao possuem protecao CSRF.
+Esta primeira versão não possui autenticação e os formulários POST não possuem proteção CSRF.
 
-Para uso publico, coloque o app atras de uma camada externa de protecao, como acesso privado da plataforma, VPN, basic auth no proxy ou solucao equivalente. Qualquer pessoa com acesso ao app pode criar, editar e excluir projetos e cards.
+Para uso publico, coloque o app atras de uma camada externa de proteção, como acesso privado da plataforma, VPN, basic auth no proxy ou solução equivalente. Qualquer pessoa com acesso ao app pode criar, editar e excluir projetos e cards.
 
 ## Roadmap
 
 - Filtro e busca de cards
 - Tags nos cards
-- Responsaveis por card
+- Responsáveis por card
 - API REST
-- Melhorias de operacao e observabilidade
+- Melhorias de operação e observabilidade
